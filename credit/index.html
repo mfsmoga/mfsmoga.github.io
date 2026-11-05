@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b4639">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pump Credit">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b4639'/%3E%3Cpath d='M18 50V16a4 4 0 0 1 4-4h16a4 4 0 0 1 4 4v34z' fill='%23fff'/%3E%3Crect x='22' y='17' width='16' height='10' rx='2' fill='%230b4639'/%3E%3Cpath d='M42 24l6 5v16a3 3 0 0 1-6 0v-8' stroke='%23e8a317' stroke-width='3.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>Petrol Pump Credit Manager</title>
+<style>
+:root{--bg:#f2f5f3;--card:#fff;--ink:#14201b;--muted:#5d6b66;--line:#e0e6e3;--brand:#0f5c4d;--brand2:#0b4639;--brandSoft:#e2f1ec;--accent:#e8a317;--danger:#b93a2e;--dangerSoft:#fcebe9;--warn:#9a6200;--warnSoft:#fff3d9;--ok:#1d7a48;--okSoft:#e2f4e8;--r:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Devanagari","Noto Sans Gurmukhi",sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--brand)}
+.shell{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+.side{background:var(--brand2);color:#fff;padding:14px 10px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;gap:10px;align-items:center;padding:6px 8px 16px;font-weight:700;line-height:1.2}
+.brand .logo{width:36px;height:36px;border-radius:10px;background:#fff1;display:grid;place-items:center;font-size:20px;flex:none}
+.brand small{display:block;font-weight:400;opacity:.75;font-size:12px}
+.side a{display:flex;gap:10px;align-items:center;color:#d4eae3;text-decoration:none;padding:10px 12px;border-radius:10px;margin:2px 0}
+.side a:hover{background:#ffffff12}
+.side a.on{background:#ffffff22;color:#fff;font-weight:600}
+.side .cnt,.bottom .cnt{background:var(--accent);color:#1b1300;border-radius:99px;font-size:11px;font-weight:700;padding:1px 7px;margin-left:auto}
+.top{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;min-height:54px}
+.top .ttl{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top select{width:auto;padding:6px 8px}
+.who{font-size:13px;color:var(--muted);white-space:nowrap}
+main{padding:18px;max-width:1180px;width:100%;margin:0 auto}
+.bottom{display:none}
+.mtitle{display:none}
+@media (max-width:899px){
+  .shell{grid-template-columns:1fr}.side{display:none}
+  main{padding:12px 12px 96px}
+  .who .nm{display:none}
+  .bottom{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);padding:6px 2px calc(6px + env(safe-area-inset-bottom));z-index:10}
+  .bottom a{flex:1;text-align:center;font-size:11px;color:var(--muted);text-decoration:none;padding:3px 0;position:relative}
+  .bottom a .i{display:block;font-size:21px;line-height:1.2}
+  .bottom a.on{color:var(--brand);font-weight:700}
+  .bottom .cnt{position:absolute;top:-2px;left:56%;margin:0}
+}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.grid{display:grid;gap:12px}.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.kpi{margin:0}.kpi .l{font-size:12px;color:var(--muted);font-weight:600}.kpi .v{font-size:23px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}.kpi .s{font-size:12px;color:var(--muted)}
+.kpi.hl{border-color:var(--accent);box-shadow:inset 4px 0 0 var(--accent)}
+h1{font-size:20px;margin:2px 0 14px}h2{font-size:16px;margin:0 0 10px}h3{font-size:14px;margin:0 0 8px}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:500}
+input,select,textarea{width:100%;padding:10px 11px;border:1px solid #cdd7d3;border-radius:10px;font:inherit;background:#fff;color:inherit;min-height:42px}
+input[readonly]{background:#f5f7f6}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--brand);outline-offset:-1px;border-color:var(--brand)}
+input[type=checkbox]{width:20px;height:20px;min-height:0;accent-color:var(--brand)}
+.form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.full{grid-column:1/-1}
+.btn{display:inline-flex;align-items:center;gap:6px;justify-content:center;padding:9px 15px;border-radius:10px;border:1px solid #cdd7d3;background:#fff;color:var(--ink);font:inherit;font-weight:600;cursor:pointer;text-decoration:none;min-height:42px;white-space:nowrap}
+.btn:hover{background:#f6f8f7}.btn:disabled{opacity:.55;cursor:wait}
+.btn.p{background:var(--brand);border-color:var(--brand);color:#fff}.btn.p:hover{background:var(--brand2)}
+.btn.d{background:#fff;border-color:#e8b9b3;color:var(--danger)}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.wa{background:#1f9d55;border-color:#1f9d55;color:#fff}
+.btn.sm{padding:5px 10px;font-size:13px;min-height:34px}
+.btn.big{width:100%;padding:13px;font-size:16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{flex:1}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;background:#f7f9f8;white-space:nowrap}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.tot td{font-weight:700;background:#f7f9f8}
+tr.click{cursor:pointer}tr.click:hover td{background:#f6faf8}
+.chip{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600;background:#eef1f0;color:var(--muted);white-space:nowrap}
+.chip.pending,.chip.warn{background:var(--warnSoft);color:var(--warn)}
+.chip.approved,.chip.ok{background:var(--okSoft);color:var(--ok)}
+.chip.rejected,.chip.bad{background:var(--dangerSoft);color:var(--danger)}
+.alert{padding:10px 12px;border-radius:10px;margin:6px 0;font-size:14px}
+.alert.warn{background:var(--warnSoft);color:#5f3d00}.alert.bad{background:var(--dangerSoft);color:#7a221a}.alert.info{background:var(--brandSoft);color:var(--brand2)}
+.muted{color:var(--muted)}.small{font-size:12px}.b{font-weight:700}.num{font-variant-numeric:tabular-nums}
+.red{color:var(--danger)}.green{color:var(--ok)}
+.seg{display:inline-flex;border:1px solid #cdd7d3;border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{border:0;background:#fff;padding:8px 13px;font:inherit;cursor:pointer;min-height:40px}
+.seg button.on{background:var(--brand);color:#fff;font-weight:600}
+.modal{position:fixed;inset:0;background:rgba(8,20,16,.5);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.modal.hidden{display:none}
+.modal .box{background:#fff;width:100%;max-width:660px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom))}
+@media(min-width:700px){.modal{align-items:center}.modal .box{border-radius:16px}}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#14201b;color:#fff;padding:11px 16px;border-radius:10px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60;max-width:92vw;text-align:center}
+#toast.show{opacity:1}
+.combo{position:relative}
+.combo-list{position:absolute;left:0;right:0;top:calc(100% + 2px);background:#fff;border:1px solid var(--line);border-radius:10px;max-height:280px;overflow:auto;z-index:20;box-shadow:0 10px 28px rgba(0,0,0,.14);display:none}
+.combo-list.open{display:block}
+.combo-list>div{padding:9px 12px;cursor:pointer;border-bottom:1px solid #f0f3f2}
+.combo-list>div:hover{background:var(--brandSoft)}
+.item{display:flex;gap:10px;padding:12px 4px;border-bottom:1px solid var(--line);align-items:flex-start}
+.item:last-child{border-bottom:0}
+.item .main{flex:1;min-width:0}
+.total-box{background:var(--brandSoft);border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:20px;color:var(--brand2)}
+.center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.center .card{max-width:460px;width:100%}
+.rates{display:flex;gap:10px;flex-wrap:wrap}
+.rate{flex:1;min-width:120px;background:#f7f9f8;border-radius:10px;padding:10px 12px}
+.rate .v{font-size:22px;font-weight:700}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tabs a{padding:7px 12px;border-radius:99px;background:#fff;border:1px solid var(--line);text-decoration:none;color:var(--ink);font-size:14px;cursor:pointer}
+.tabs a.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.empty{padding:22px;text-align:center;color:var(--muted)}
+.bill{background:#fff;padding:26px;border:1px solid var(--line);border-radius:12px;max-width:860px;margin:auto}
+.bill .hd{display:flex;justify-content:space-between;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:12px;flex-wrap:wrap}
+.bill .pn{font-size:22px;font-weight:800}
+.bill table{font-size:13px}
+.bill th,.bill td{padding:6px 8px}
+.sumtbl td{border:0;padding:3px 8px}
+.demo-bar{background:var(--accent);color:#1b1300;font-size:13px;padding:5px 12px;text-align:center}
+.demo-bar button{border:0;background:#1b130022;border-radius:6px;padding:2px 8px;margin-left:6px;font:inherit;cursor:pointer}
+@media print{
+  .side,.bottom,.top,.noprint,.demo-bar{display:none!important}
+  body,html{background:#fff}main{padding:0;max-width:none}.shell{display:block}
+  .bill{border:0;padding:0;max-width:none}.card{border:0;padding:0}
+  .tw{border:0;overflow:visible}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal" class="modal hidden"><div class="box"></div></div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   CONFIG — paste your Supabase details here before hosting the app.
+   (Supabase → Project Settings → API). Leave empty to choose on first launch.
+   ===================================================================== */
+const CONFIG = { SUPABASE_URL: 'https://bpiabsdqmpiqybxblzag.supabase.co', SUPABASE_ANON_KEY: 'sb_publishable_2oXccCI4x9nS_voIF4-HZA_WdTB8_BV' };
+
+/* ============================== i18n ============================== */
+const I18N = {
+en:{app:'Credit Manager',dashboard:'Dashboard',new_slip:'Credit slip',new_slip_t:'New credit slip',payment:'Payment',payment_t:'Receive payment',approvals:'Approvals',my_entries:'My entries',customers:'Customers',customer:'Customer',bills:'Bills',reports:'Reports',settings:'Settings',staff:'Staff',more:'More',logout:'Log out',login:'Log in',signup:'Create account',email:'Email',password:'Password',name:'Name',phone:'Phone / WhatsApp',outstanding:'Outstanding',pending:'Pending',approved:'Approved',rejected:'Rejected',approve:'Approve',reject:'Reject',approve_sel:'Approve selected',select_all:'Select all',petrol:'Petrol',diesel:'Diesel',lube:'Lubricant',todays_rates:"Today's rates",set_rates:'Update rates',rate:'Rate',litres:'Litres',qty:'Qty',amount:'Amount',date:'Date',vehicle:'Vehicle',vehicle_no:'Vehicle no.',product:'Product',slip_no:'Slip no.',driver:'Driver',odometer:'Odometer (km)',po_no:'PO / Indent no.',note:'Note',save:'Save',cancel:'Cancel',close:'Close',by_litres:'By litres',by_amount:'By amount (₹)',total:'Total',mode:'Payment mode',cash:'Cash',upi:'UPI',cheque:'Cheque',bank:'Bank transfer',ref_no:'Reference / UTR / cheque no.',credit_limit:'Credit limit (₹, 0 = no limit)',limit:'Limit',over_limit:'Over limit',near_limit:'Near limit',overdue:'Overdue',warn_over:'Over credit limit: balance after this slip will be {a} (limit {b}).',warn_overdue:'Customer has an overdue bill: {a} was due on {d}.',warn_inactive:'This customer is marked inactive.',no_rate:'Fuel rate not set for this date. Ask the owner to update rates.',saved_pending:'Saved. Waiting for owner approval.',saved:'Saved.',add_customer:'Add customer',edit:'Edit',edit_customer:'Edit customer',ctype:'Customer type',t_fleet:'Transporter / Fleet',t_farmer:'Farmer',t_business:'Business / Govt',t_individual:'Individual',gstin:'GSTIN',address:'Address',cycle:'Billing cycle',c_weekly:'Weekly',c_fortnightly:'Fortnightly (15 days)',c_monthly:'Monthly',c_seasonal:'Seasonal / harvest (manual)',c_custom:'Custom days',cycle_days:'Cycle length (days)',due_days:'Pay within (days after bill)',interest:'Interest % per month on overdue',interest_s:'Interest',msg_lang:'WhatsApp message language',vehicles:'Vehicles',add_vehicle:'Add vehicle',vtype:'Vehicle type',fuel:'Fuel',v_truck:'Truck',v_tractor:'Tractor',v_car:'Car / Jeep',v_pickup:'Pickup / Tempo',v_bike:'Two-wheeler',v_bus:'Bus',v_machine:'JCB / Machine',v_genset:'Generator',v_other:'Other',ledger:'Ledger',balance:'Balance',debit:'Debit',credit:'Credit',opening:'Previous balance',closing:'Amount payable',due_date:'Due date',generate_bill:'Generate bill',generate_all:'Generate all',bills_due:'Bills ready to generate',period:'Period',from:'From',to:'To',bill_no:'Bill no.',print:'Print / PDF',whatsapp:'WhatsApp',reminder:'Send reminder',paid:'Paid',due:'Due',today_sales:"Today's credit sales",today_pay:"Today's payments",total_out:'Total outstanding',pending_appr:'Pending approvals',overdue_cust:'Overdue customers',limit_alerts:'Credit limit alerts',recent:'Recent entries',nothing:'Nothing here',search:'Search name, phone or vehicle',all:'All',created_by:'Entered by',reason:'Reason for rejection',rate_missing:"Today's rates are not set yet.",r_daily:'Daily credit sales',r_payments:'Payments received',r_ageing:'Outstanding & ageing',r_customer:'Customer-wise summary',r_vehicle:'Vehicle-wise usage',r_staff:'Staff-wise entries',export_csv:'Export to Excel (CSV)',show:'Show',pump_details:'Pump details (shown on bills)',pump_name:'Pump name',company:'Oil company / dealer code',lube_gst:'Default lubricant GST %',bill_footer:'Bill footer text',lubes:'Lubricants & other items',price_incl:'Price ₹ (incl. GST)',gst_pct:'GST %',unit:'Unit',add:'Add',rate_hist:'Rate history',backup:'Download backup (JSON)',reset_demo:'Reset demo data',demo_mode:'DEMO — data is saved only in this browser.',demo_as:'Viewing as',role:'Role',owner:'Owner',staffr:'Staff',active:'Active',inactive:'Inactive',staff_help:'Staff create their own account from the login screen (Create account). New accounts stay inactive until you switch them on here.',waiting:'Your account is waiting for the owner to activate it.',refresh:'Refresh',welcome:'Welcome',welcome_t:'Credit management for petrol pumps: slips, approvals, bills and WhatsApp reminders.',try_demo:'Try the demo',connect:'Connect my Supabase',sb_url:'Supabase project URL',sb_key:'Supabase anon public key',items:'Entries',status:'Status',type:'Type',particulars:'Particulars',k_slip:'Credit slip',k_payment:'Payment',k_interest:'Interest',k_debit_note:'Debit adjustment',k_credit_note:'Credit adjustment / discount',adjust:'Adjustment',taxable:'Taxable value',gst:'GST',in_words:'Amount in words',signature:'Authorised signatory',bill_to:'Bill to',statement:'Credit statement / bill',pend_note:'{n} pending entries up to this date are not approved yet and will not be included.',interest_added:'Interest added',confirm:'Confirm',available:'Available credit',next_bill:'Next bill',last_bill:'Last bill',no_bill_yet:'No bill yet',history:'History',pend_tab:'Pending',view:'View',approved_bal:'Approved balance',pending_bal:'Pending (provisional)',err_req:'Please fill the required fields.',err_amt:'Enter a valid quantity / amount.',err_cust:'Select a customer.',err_owner:'Only the owner can do this.',other_veh:'Other — type number',select:'— Select —',edit_rate_owner:'Only the owner can change the rate.',language:'Language',data:'Data & connection',connected_to:'Connected to',disconnect:'Change connection',ledger_from:'Ledger from',as_on:'as on',no_items:'No unbilled entries for this customer.',bill_now:'Bill up to today',adv:'Advance',check_email:'Account created. If email confirmation is on, confirm from your inbox, then log in.',new_pw:'At least 6 characters',demo_users:'Continue as',leave_demo:'Leave demo',first_owner:'The first account created becomes the Owner.',wa_none:'No phone number saved for this customer.',fills:'Fills',days:'days',lube_l:'Lubricants',cust_note:'Note',approved_by:'Approved by',over_limit_flag:'over limit',rate_diff:'rate differs from day rate',bulk_done:'{n} entries approved.',make_owner:'Make owner',edit_item:'Edit item',share:'Share',ok:'OK'},
+hi:{app:'उधार प्रबंधन',dashboard:'डैशबोर्ड',new_slip:'उधार पर्ची',new_slip_t:'नई उधार पर्ची',payment:'भुगतान',payment_t:'भुगतान प्राप्त करें',approvals:'स्वीकृतियाँ',my_entries:'मेरी एंट्री',customers:'ग्राहक',customer:'ग्राहक',bills:'बिल',reports:'रिपोर्ट',settings:'सेटिंग्स',staff:'स्टाफ',more:'और',logout:'लॉग आउट',login:'लॉग इन',signup:'खाता बनाएँ',email:'ईमेल',password:'पासवर्ड',name:'नाम',phone:'फ़ोन / व्हाट्सऐप',outstanding:'बकाया',pending:'लंबित',approved:'स्वीकृत',rejected:'अस्वीकृत',approve:'स्वीकृत करें',reject:'अस्वीकार करें',approve_sel:'चुनी हुई स्वीकृत करें',select_all:'सभी चुनें',petrol:'पेट्रोल',diesel:'डीज़ल',lube:'लुब्रिकेंट',todays_rates:'आज के रेट',set_rates:'रेट बदलें',rate:'रेट',litres:'लीटर',qty:'मात्रा',amount:'राशि',date:'तारीख',vehicle:'वाहन',vehicle_no:'गाड़ी नंबर',product:'उत्पाद',slip_no:'पर्ची नं.',driver:'ड्राइवर',odometer:'मीटर रीडिंग (km)',po_no:'PO / इंडेंट नं.',note:'टिप्पणी',save:'सेव करें',cancel:'रद्द',close:'बंद करें',by_litres:'लीटर से',by_amount:'राशि से (₹)',total:'कुल',mode:'भुगतान का तरीका',cash:'नकद',upi:'UPI',cheque:'चेक',bank:'बैंक ट्रांसफर',ref_no:'रेफरेंस / UTR / चेक नं.',credit_limit:'उधार सीमा (₹, 0 = कोई सीमा नहीं)',limit:'सीमा',over_limit:'सीमा से अधिक',near_limit:'सीमा के पास',overdue:'तिथि पार',warn_over:'उधार सीमा पार: इस पर्ची के बाद बकाया {a} होगा (सीमा {b})।',warn_overdue:'ग्राहक का बिल बकाया है: {a}, अंतिम तिथि {d} थी।',warn_inactive:'यह ग्राहक निष्क्रिय है।',no_rate:'इस तारीख का रेट नहीं डाला गया। मालिक से रेट अपडेट करवाएँ।',saved_pending:'सेव हो गया। मालिक की स्वीकृति बाकी है।',saved:'सेव हो गया।',add_customer:'ग्राहक जोड़ें',edit:'बदलें',edit_customer:'ग्राहक बदलें',ctype:'ग्राहक का प्रकार',t_fleet:'ट्रांसपोर्टर / फ्लीट',t_farmer:'किसान',t_business:'व्यापार / सरकारी विभाग',t_individual:'व्यक्तिगत',gstin:'GSTIN',address:'पता',cycle:'बिलिंग चक्र',c_weekly:'साप्ताहिक',c_fortnightly:'पाक्षिक (15 दिन)',c_monthly:'मासिक',c_seasonal:'फसल / मौसमी (मैन्युअल)',c_custom:'कस्टम दिन',cycle_days:'चक्र की अवधि (दिन)',due_days:'भुगतान अवधि (बिल के बाद दिन)',interest:'बकाया पर ब्याज % प्रति माह',interest_s:'ब्याज',msg_lang:'व्हाट्सऐप संदेश की भाषा',vehicles:'वाहन',add_vehicle:'वाहन जोड़ें',vtype:'वाहन का प्रकार',fuel:'ईंधन',v_truck:'ट्रक',v_tractor:'ट्रैक्टर',v_car:'कार / जीप',v_pickup:'पिकअप / टेम्पो',v_bike:'दोपहिया',v_bus:'बस',v_machine:'JCB / मशीन',v_genset:'जनरेटर',v_other:'अन्य',ledger:'खाता',balance:'शेष',debit:'नामे',credit:'जमा',opening:'पिछला बकाया',closing:'देय राशि',due_date:'अंतिम तिथि',generate_bill:'बिल बनाएँ',generate_all:'सभी बनाएँ',bills_due:'बनाने योग्य बिल',period:'अवधि',from:'से',to:'तक',bill_no:'बिल नं.',print:'प्रिंट / PDF',whatsapp:'व्हाट्सऐप',reminder:'रिमाइंडर भेजें',paid:'चुकता',due:'देय',today_sales:'आज की उधार बिक्री',today_pay:'आज के भुगतान',total_out:'कुल बकाया',pending_appr:'लंबित स्वीकृतियाँ',overdue_cust:'तिथि पार ग्राहक',limit_alerts:'उधार सीमा चेतावनी',recent:'हाल की एंट्री',nothing:'कुछ नहीं',search:'नाम, फ़ोन या गाड़ी नंबर खोजें',all:'सभी',created_by:'एंट्री करने वाला',reason:'अस्वीकार का कारण',rate_missing:'आज के रेट अभी नहीं डाले गए।',r_daily:'दैनिक उधार बिक्री',r_payments:'प्राप्त भुगतान',r_ageing:'बकाया व पुरानापन',r_customer:'ग्राहक-वार सारांश',r_vehicle:'वाहन-वार खपत',r_staff:'स्टाफ-वार एंट्री',export_csv:'Excel (CSV) में निकालें',show:'दिखाएँ',pump_details:'पंप का विवरण (बिल पर दिखेगा)',pump_name:'पंप का नाम',company:'तेल कंपनी / डीलर कोड',lube_gst:'लुब्रिकेंट GST % (डिफ़ॉल्ट)',bill_footer:'बिल के नीचे लिखा संदेश',lubes:'लुब्रिकेंट व अन्य सामान',price_incl:'कीमत ₹ (GST सहित)',gst_pct:'GST %',unit:'इकाई',add:'जोड़ें',rate_hist:'रेट इतिहास',backup:'बैकअप डाउनलोड (JSON)',reset_demo:'डेमो डेटा रीसेट',demo_mode:'डेमो — डेटा सिर्फ़ इसी ब्राउज़र में सेव है।',demo_as:'इस रूप में',role:'भूमिका',owner:'मालिक',staffr:'स्टाफ',active:'सक्रिय',inactive:'निष्क्रिय',staff_help:'स्टाफ लॉगिन स्क्रीन पर "खाता बनाएँ" से अपना खाता बनाते हैं। नया खाता तब तक निष्क्रिय रहता है जब तक आप उसे यहाँ चालू न करें।',waiting:'आपका खाता मालिक द्वारा चालू किए जाने का इंतज़ार कर रहा है।',refresh:'रीफ़्रेश',welcome:'स्वागत है',welcome_t:'पेट्रोल पंप के लिए उधार प्रबंधन: पर्ची, स्वीकृति, बिल और व्हाट्सऐप रिमाइंडर।',try_demo:'डेमो देखें',connect:'मेरा Supabase जोड़ें',sb_url:'Supabase प्रोजेक्ट URL',sb_key:'Supabase anon public key',items:'एंट्री',status:'स्थिति',type:'प्रकार',particulars:'विवरण',k_slip:'उधार पर्ची',k_payment:'भुगतान',k_interest:'ब्याज',k_debit_note:'नामे समायोजन',k_credit_note:'जमा समायोजन / छूट',adjust:'समायोजन',taxable:'कर योग्य मूल्य',gst:'GST',in_words:'राशि शब्दों में',signature:'अधिकृत हस्ताक्षर',bill_to:'बिल प्राप्तकर्ता',statement:'उधार विवरण / बिल',pend_note:'इस तारीख तक की {n} लंबित एंट्री अभी स्वीकृत नहीं हैं, वे बिल में नहीं जुड़ेंगी।',interest_added:'ब्याज जोड़ा गया',confirm:'पक्का करें',available:'उपलब्ध उधार',next_bill:'अगला बिल',last_bill:'पिछला बिल',no_bill_yet:'अभी कोई बिल नहीं',history:'इतिहास',pend_tab:'लंबित',view:'देखें',approved_bal:'स्वीकृत बकाया',pending_bal:'लंबित (अस्थायी)',err_req:'ज़रूरी जानकारी भरें।',err_amt:'सही मात्रा / राशि डालें।',err_cust:'ग्राहक चुनें।',err_owner:'यह सिर्फ़ मालिक कर सकते हैं।',other_veh:'अन्य — नंबर लिखें',select:'— चुनें —',edit_rate_owner:'रेट सिर्फ़ मालिक बदल सकते हैं।',language:'भाषा',data:'डेटा व कनेक्शन',connected_to:'जुड़ा है',disconnect:'कनेक्शन बदलें',ledger_from:'खाता इस तारीख से',as_on:'तक',no_items:'इस ग्राहक की कोई बिना-बिल एंट्री नहीं है।',bill_now:'आज तक का बिल',adv:'अग्रिम',check_email:'खाता बन गया। अगर ईमेल पुष्टि चालू है तो ईमेल से पुष्टि करें, फिर लॉग इन करें।',new_pw:'कम से कम 6 अक्षर',demo_users:'इस रूप में जारी रखें',leave_demo:'डेमो से बाहर',first_owner:'पहला बनाया गया खाता मालिक बनता है।',wa_none:'इस ग्राहक का फ़ोन नंबर सेव नहीं है।',fills:'भराई',days:'दिन',lube_l:'लुब्रिकेंट',cust_note:'टिप्पणी',approved_by:'स्वीकृत किया',over_limit_flag:'सीमा पार',rate_diff:'दिन के रेट से अलग',bulk_done:'{n} एंट्री स्वीकृत।',make_owner:'मालिक बनाएँ',edit_item:'सामान बदलें',share:'शेयर',ok:'ठीक'},
+pa:{app:'ਉਧਾਰ ਪ੍ਰਬੰਧਨ',dashboard:'ਡੈਸ਼ਬੋਰਡ',new_slip:'ਉਧਾਰ ਪਰਚੀ',new_slip_t:'ਨਵੀਂ ਉਧਾਰ ਪਰਚੀ',payment:'ਭੁਗਤਾਨ',payment_t:'ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਕਰੋ',approvals:'ਮਨਜ਼ੂਰੀਆਂ',my_entries:'ਮੇਰੀਆਂ ਐਂਟਰੀਆਂ',customers:'ਗਾਹਕ',customer:'ਗਾਹਕ',bills:'ਬਿੱਲ',reports:'ਰਿਪੋਰਟਾਂ',settings:'ਸੈਟਿੰਗਾਂ',staff:'ਸਟਾਫ਼',more:'ਹੋਰ',logout:'ਲੌਗ ਆਊਟ',login:'ਲੌਗ ਇਨ',signup:'ਖਾਤਾ ਬਣਾਓ',email:'ਈਮੇਲ',password:'ਪਾਸਵਰਡ',name:'ਨਾਮ',phone:'ਫ਼ੋਨ / ਵਟਸਐਪ',outstanding:'ਬਕਾਇਆ',pending:'ਲੰਬਿਤ',approved:'ਮਨਜ਼ੂਰ',rejected:'ਨਾਮਨਜ਼ੂਰ',approve:'ਮਨਜ਼ੂਰ ਕਰੋ',reject:'ਨਾਮਨਜ਼ੂਰ ਕਰੋ',approve_sel:'ਚੁਣੀਆਂ ਮਨਜ਼ੂਰ ਕਰੋ',select_all:'ਸਾਰੀਆਂ ਚੁਣੋ',petrol:'ਪੈਟਰੋਲ',diesel:'ਡੀਜ਼ਲ',lube:'ਲੁਬਰੀਕੈਂਟ',todays_rates:'ਅੱਜ ਦੇ ਰੇਟ',set_rates:'ਰੇਟ ਬਦਲੋ',rate:'ਰੇਟ',litres:'ਲੀਟਰ',qty:'ਮਾਤਰਾ',amount:'ਰਕਮ',date:'ਤਾਰੀਖ',vehicle:'ਵਾਹਨ',vehicle_no:'ਗੱਡੀ ਨੰਬਰ',product:'ਉਤਪਾਦ',slip_no:'ਪਰਚੀ ਨੰ.',driver:'ਡਰਾਈਵਰ',odometer:'ਮੀਟਰ ਰੀਡਿੰਗ (km)',po_no:'PO / ਇੰਡੈਂਟ ਨੰ.',note:'ਟਿੱਪਣੀ',save:'ਸੇਵ ਕਰੋ',cancel:'ਛੱਡੋ',close:'ਬੰਦ ਕਰੋ',by_litres:'ਲੀਟਰ ਨਾਲ',by_amount:'ਰਕਮ ਨਾਲ (₹)',total:'ਕੁੱਲ',mode:'ਭੁਗਤਾਨ ਦਾ ਤਰੀਕਾ',cash:'ਨਕਦ',upi:'UPI',cheque:'ਚੈੱਕ',bank:'ਬੈਂਕ ਟ੍ਰਾਂਸਫਰ',ref_no:'ਰੈਫਰੈਂਸ / UTR / ਚੈੱਕ ਨੰ.',credit_limit:'ਉਧਾਰ ਸੀਮਾ (₹, 0 = ਕੋਈ ਸੀਮਾ ਨਹੀਂ)',limit:'ਸੀਮਾ',over_limit:'ਸੀਮਾ ਤੋਂ ਵੱਧ',near_limit:'ਸੀਮਾ ਦੇ ਨੇੜੇ',overdue:'ਮਿਆਦ ਲੰਘੀ',warn_over:'ਉਧਾਰ ਸੀਮਾ ਪਾਰ: ਇਸ ਪਰਚੀ ਤੋਂ ਬਾਅਦ ਬਕਾਇਆ {a} ਹੋਵੇਗਾ (ਸੀਮਾ {b})।',warn_overdue:'ਗਾਹਕ ਦਾ ਬਿੱਲ ਬਕਾਇਆ ਹੈ: {a}, ਆਖਰੀ ਤਾਰੀਖ {d} ਸੀ।',warn_inactive:'ਇਹ ਗਾਹਕ ਨਿਸ਼ਕਿਰਿਆ ਹੈ।',no_rate:'ਇਸ ਤਾਰੀਖ ਦਾ ਰੇਟ ਨਹੀਂ ਪਾਇਆ ਗਿਆ। ਮਾਲਕ ਤੋਂ ਰੇਟ ਅੱਪਡੇਟ ਕਰਵਾਓ।',saved_pending:'ਸੇਵ ਹੋ ਗਿਆ। ਮਾਲਕ ਦੀ ਮਨਜ਼ੂਰੀ ਬਾਕੀ ਹੈ।',saved:'ਸੇਵ ਹੋ ਗਿਆ।',add_customer:'ਗਾਹਕ ਜੋੜੋ',edit:'ਬਦਲੋ',edit_customer:'ਗਾਹਕ ਬਦਲੋ',ctype:'ਗਾਹਕ ਦੀ ਕਿਸਮ',t_fleet:'ਟਰਾਂਸਪੋਰਟਰ / ਫਲੀਟ',t_farmer:'ਕਿਸਾਨ',t_business:'ਵਪਾਰ / ਸਰਕਾਰੀ ਵਿਭਾਗ',t_individual:'ਨਿੱਜੀ',gstin:'GSTIN',address:'ਪਤਾ',cycle:'ਬਿਲਿੰਗ ਚੱਕਰ',c_weekly:'ਹਫ਼ਤਾਵਾਰੀ',c_fortnightly:'ਪੰਦਰਵਾੜਾ (15 ਦਿਨ)',c_monthly:'ਮਹੀਨਾਵਾਰ',c_seasonal:'ਫ਼ਸਲੀ / ਮੌਸਮੀ (ਹੱਥੀਂ)',c_custom:'ਕਸਟਮ ਦਿਨ',cycle_days:'ਚੱਕਰ ਦੀ ਮਿਆਦ (ਦਿਨ)',due_days:'ਭੁਗਤਾਨ ਮਿਆਦ (ਬਿੱਲ ਤੋਂ ਬਾਅਦ ਦਿਨ)',interest:'ਬਕਾਏ \'ਤੇ ਵਿਆਜ % ਪ੍ਰਤੀ ਮਹੀਨਾ',interest_s:'ਵਿਆਜ',msg_lang:'ਵਟਸਐਪ ਸੁਨੇਹੇ ਦੀ ਭਾਸ਼ਾ',vehicles:'ਵਾਹਨ',add_vehicle:'ਵਾਹਨ ਜੋੜੋ',vtype:'ਵਾਹਨ ਦੀ ਕਿਸਮ',fuel:'ਈਂਧਨ',v_truck:'ਟਰੱਕ',v_tractor:'ਟਰੈਕਟਰ',v_car:'ਕਾਰ / ਜੀਪ',v_pickup:'ਪਿਕਅੱਪ / ਟੈਂਪੂ',v_bike:'ਦੋਪਹੀਆ',v_bus:'ਬੱਸ',v_machine:'JCB / ਮਸ਼ੀਨ',v_genset:'ਜਨਰੇਟਰ',v_other:'ਹੋਰ',ledger:'ਖਾਤਾ',balance:'ਬਾਕੀ',debit:'ਨਾਮੇ',credit:'ਜਮ੍ਹਾ',opening:'ਪਿਛਲਾ ਬਕਾਇਆ',closing:'ਭੁਗਤਾਨਯੋਗ ਰਕਮ',due_date:'ਆਖਰੀ ਤਾਰੀਖ',generate_bill:'ਬਿੱਲ ਬਣਾਓ',generate_all:'ਸਾਰੇ ਬਣਾਓ',bills_due:'ਬਣਾਉਣ ਯੋਗ ਬਿੱਲ',period:'ਮਿਆਦ',from:'ਤੋਂ',to:'ਤੱਕ',bill_no:'ਬਿੱਲ ਨੰ.',print:'ਪ੍ਰਿੰਟ / PDF',whatsapp:'ਵਟਸਐਪ',reminder:'ਯਾਦ ਦਿਵਾਓ',paid:'ਭੁਗਤਾਨ ਹੋਇਆ',due:'ਬਕਾਇਆ',today_sales:'ਅੱਜ ਦੀ ਉਧਾਰ ਵਿਕਰੀ',today_pay:'ਅੱਜ ਦੇ ਭੁਗਤਾਨ',total_out:'ਕੁੱਲ ਬਕਾਇਆ',pending_appr:'ਲੰਬਿਤ ਮਨਜ਼ੂਰੀਆਂ',overdue_cust:'ਮਿਆਦ ਲੰਘੇ ਗਾਹਕ',limit_alerts:'ਉਧਾਰ ਸੀਮਾ ਚੇਤਾਵਨੀ',recent:'ਹਾਲੀਆ ਐਂਟਰੀਆਂ',nothing:'ਕੁਝ ਨਹੀਂ',search:'ਨਾਮ, ਫ਼ੋਨ ਜਾਂ ਗੱਡੀ ਨੰਬਰ ਲੱਭੋ',all:'ਸਾਰੇ',created_by:'ਐਂਟਰੀ ਕਰਨ ਵਾਲਾ',reason:'ਨਾਮਨਜ਼ੂਰੀ ਦਾ ਕਾਰਨ',rate_missing:'ਅੱਜ ਦੇ ਰੇਟ ਅਜੇ ਨਹੀਂ ਪਾਏ ਗਏ।',r_daily:'ਰੋਜ਼ਾਨਾ ਉਧਾਰ ਵਿਕਰੀ',r_payments:'ਪ੍ਰਾਪਤ ਭੁਗਤਾਨ',r_ageing:'ਬਕਾਇਆ ਤੇ ਪੁਰਾਣਾਪਨ',r_customer:'ਗਾਹਕ-ਵਾਰ ਸਾਰ',r_vehicle:'ਵਾਹਨ-ਵਾਰ ਖਪਤ',r_staff:'ਸਟਾਫ਼-ਵਾਰ ਐਂਟਰੀਆਂ',export_csv:'Excel (CSV) ਵਿੱਚ ਕੱਢੋ',show:'ਵਿਖਾਓ',pump_details:'ਪੰਪ ਦਾ ਵੇਰਵਾ (ਬਿੱਲ \'ਤੇ ਦਿਖੇਗਾ)',pump_name:'ਪੰਪ ਦਾ ਨਾਮ',company:'ਤੇਲ ਕੰਪਨੀ / ਡੀਲਰ ਕੋਡ',lube_gst:'ਲੁਬਰੀਕੈਂਟ GST % (ਡਿਫ਼ਾਲਟ)',bill_footer:'ਬਿੱਲ ਦੇ ਹੇਠਾਂ ਲਿਖਿਆ ਸੁਨੇਹਾ',lubes:'ਲੁਬਰੀਕੈਂਟ ਤੇ ਹੋਰ ਸਮਾਨ',price_incl:'ਕੀਮਤ ₹ (GST ਸਮੇਤ)',gst_pct:'GST %',unit:'ਇਕਾਈ',add:'ਜੋੜੋ',rate_hist:'ਰੇਟ ਇਤਿਹਾਸ',backup:'ਬੈਕਅੱਪ ਡਾਊਨਲੋਡ (JSON)',reset_demo:'ਡੈਮੋ ਡਾਟਾ ਰੀਸੈੱਟ',demo_mode:'ਡੈਮੋ — ਡਾਟਾ ਸਿਰਫ਼ ਇਸੇ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੇਵ ਹੈ।',demo_as:'ਇਸ ਰੂਪ ਵਿੱਚ',role:'ਭੂਮਿਕਾ',owner:'ਮਾਲਕ',staffr:'ਸਟਾਫ਼',active:'ਸਰਗਰਮ',inactive:'ਨਿਸ਼ਕਿਰਿਆ',staff_help:'ਸਟਾਫ਼ ਲੌਗਇਨ ਸਕ੍ਰੀਨ \'ਤੇ "ਖਾਤਾ ਬਣਾਓ" ਨਾਲ ਆਪਣਾ ਖਾਤਾ ਬਣਾਉਂਦਾ ਹੈ। ਨਵਾਂ ਖਾਤਾ ਉਦੋਂ ਤੱਕ ਨਿਸ਼ਕਿਰਿਆ ਰਹਿੰਦਾ ਹੈ ਜਦ ਤੱਕ ਤੁਸੀਂ ਇੱਥੇ ਚਾਲੂ ਨਾ ਕਰੋ।',waiting:'ਤੁਹਾਡਾ ਖਾਤਾ ਮਾਲਕ ਵੱਲੋਂ ਚਾਲੂ ਕੀਤੇ ਜਾਣ ਦੀ ਉਡੀਕ ਵਿੱਚ ਹੈ।',refresh:'ਰੀਫ੍ਰੈਸ਼',welcome:'ਜੀ ਆਇਆਂ ਨੂੰ',welcome_t:'ਪੈਟਰੋਲ ਪੰਪ ਲਈ ਉਧਾਰ ਪ੍ਰਬੰਧਨ: ਪਰਚੀ, ਮਨਜ਼ੂਰੀ, ਬਿੱਲ ਅਤੇ ਵਟਸਐਪ ਯਾਦ-ਦਹਾਨੀ।',try_demo:'ਡੈਮੋ ਵੇਖੋ',connect:'ਮੇਰਾ Supabase ਜੋੜੋ',sb_url:'Supabase ਪ੍ਰੋਜੈਕਟ URL',sb_key:'Supabase anon public key',items:'ਐਂਟਰੀਆਂ',status:'ਸਥਿਤੀ',type:'ਕਿਸਮ',particulars:'ਵੇਰਵਾ',k_slip:'ਉਧਾਰ ਪਰਚੀ',k_payment:'ਭੁਗਤਾਨ',k_interest:'ਵਿਆਜ',k_debit_note:'ਨਾਮੇ ਸਮਾਯੋਜਨ',k_credit_note:'ਜਮ੍ਹਾ ਸਮਾਯੋਜਨ / ਛੋਟ',adjust:'ਸਮਾਯੋਜਨ',taxable:'ਕਰਯੋਗ ਮੁੱਲ',gst:'GST',in_words:'ਰਕਮ ਸ਼ਬਦਾਂ ਵਿੱਚ',signature:'ਅਧਿਕਾਰਤ ਦਸਤਖ਼ਤ',bill_to:'ਬਿੱਲ ਪ੍ਰਾਪਤਕਰਤਾ',statement:'ਉਧਾਰ ਵੇਰਵਾ / ਬਿੱਲ',pend_note:'ਇਸ ਤਾਰੀਖ ਤੱਕ ਦੀਆਂ {n} ਲੰਬਿਤ ਐਂਟਰੀਆਂ ਅਜੇ ਮਨਜ਼ੂਰ ਨਹੀਂ ਹਨ, ਉਹ ਬਿੱਲ ਵਿੱਚ ਨਹੀਂ ਜੁੜਨਗੀਆਂ।',interest_added:'ਵਿਆਜ ਜੋੜਿਆ ਗਿਆ',confirm:'ਪੱਕਾ ਕਰੋ',available:'ਉਪਲਬਧ ਉਧਾਰ',next_bill:'ਅਗਲਾ ਬਿੱਲ',last_bill:'ਪਿਛਲਾ ਬਿੱਲ',no_bill_yet:'ਅਜੇ ਕੋਈ ਬਿੱਲ ਨਹੀਂ',history:'ਇਤਿਹਾਸ',pend_tab:'ਲੰਬਿਤ',view:'ਵੇਖੋ',approved_bal:'ਮਨਜ਼ੂਰ ਬਕਾਇਆ',pending_bal:'ਲੰਬਿਤ (ਆਰਜ਼ੀ)',err_req:'ਲੋੜੀਂਦੀ ਜਾਣਕਾਰੀ ਭਰੋ।',err_amt:'ਸਹੀ ਮਾਤਰਾ / ਰਕਮ ਪਾਓ।',err_cust:'ਗਾਹਕ ਚੁਣੋ।',err_owner:'ਇਹ ਸਿਰਫ਼ ਮਾਲਕ ਕਰ ਸਕਦਾ ਹੈ।',other_veh:'ਹੋਰ — ਨੰਬਰ ਲਿਖੋ',select:'— ਚੁਣੋ —',edit_rate_owner:'ਰੇਟ ਸਿਰਫ਼ ਮਾਲਕ ਬਦਲ ਸਕਦਾ ਹੈ।',language:'ਭਾਸ਼ਾ',data:'ਡਾਟਾ ਤੇ ਕਨੈਕਸ਼ਨ',connected_to:'ਜੁੜਿਆ ਹੈ',disconnect:'ਕਨੈਕਸ਼ਨ ਬਦਲੋ',ledger_from:'ਖਾਤਾ ਇਸ ਤਾਰੀਖ ਤੋਂ',as_on:'ਤੱਕ',no_items:'ਇਸ ਗਾਹਕ ਦੀ ਕੋਈ ਬਿਨਾਂ-ਬਿੱਲ ਐਂਟਰੀ ਨਹੀਂ।',bill_now:'ਅੱਜ ਤੱਕ ਦਾ ਬਿੱਲ',adv:'ਅਗਾਊਂ',check_email:'ਖਾਤਾ ਬਣ ਗਿਆ। ਜੇ ਈਮੇਲ ਪੁਸ਼ਟੀ ਚਾਲੂ ਹੈ ਤਾਂ ਈਮੇਲ ਤੋਂ ਪੁਸ਼ਟੀ ਕਰੋ, ਫਿਰ ਲੌਗ ਇਨ ਕਰੋ।',new_pw:'ਘੱਟੋ-ਘੱਟ 6 ਅੱਖਰ',demo_users:'ਇਸ ਰੂਪ ਵਿੱਚ ਜਾਰੀ ਰੱਖੋ',leave_demo:'ਡੈਮੋ ਤੋਂ ਬਾਹਰ',first_owner:'ਪਹਿਲਾ ਬਣਾਇਆ ਖਾਤਾ ਮਾਲਕ ਬਣਦਾ ਹੈ।',wa_none:'ਇਸ ਗਾਹਕ ਦਾ ਫ਼ੋਨ ਨੰਬਰ ਸੇਵ ਨਹੀਂ ਹੈ।',fills:'ਭਰਾਈ',days:'ਦਿਨ',lube_l:'ਲੁਬਰੀਕੈਂਟ',cust_note:'ਟਿੱਪਣੀ',approved_by:'ਮਨਜ਼ੂਰ ਕੀਤਾ',over_limit_flag:'ਸੀਮਾ ਪਾਰ',rate_diff:'ਦਿਨ ਦੇ ਰੇਟ ਤੋਂ ਵੱਖਰਾ',bulk_done:'{n} ਐਂਟਰੀਆਂ ਮਨਜ਼ੂਰ।',make_owner:'ਮਾਲਕ ਬਣਾਓ',edit_item:'ਸਮਾਨ ਬਦਲੋ',share:'ਸ਼ੇਅਰ',ok:'ਠੀਕ'}
+};
+const WA = {
+ en:{rem:"Namaste {name} ji,\nYour outstanding credit balance at {pump} is {amt} as on {date}.{due}\nKindly clear the payment at the earliest.\nThank you 🙏\n{pump} {phone}", due:"\nBill no. {no} was due on {dd}.",
+     bill:"Namaste {name} ji,\nBill no. {no} ({from} to {to}) from {pump}:\nPrevious balance: {open}\nPurchases: {dr}\nInterest: {int}\nPayments received: {cr}\nAmount payable: {closing}\nPlease pay by {due}.\nThank you 🙏\n{phone}"},
+ hi:{rem:"नमस्ते {name} जी,\n{pump} पर आपका उधार बकाया {date} तक {amt} है।{due}\nकृपया जल्द से जल्द भुगतान करें।\nधन्यवाद 🙏\n{pump} {phone}", due:"\nबिल नं. {no} की अंतिम तिथि {dd} थी।",
+     bill:"नमस्ते {name} जी,\n{pump} का बिल नं. {no} ({from} से {to}):\nपिछला बकाया: {open}\nखरीद: {dr}\nब्याज: {int}\nप्राप्त भुगतान: {cr}\nदेय राशि: {closing}\nकृपया {due} तक भुगतान करें।\nधन्यवाद 🙏\n{phone}"},
+ pa:{rem:"ਸਤ ਸ੍ਰੀ ਅਕਾਲ {name} ਜੀ,\n{pump} 'ਤੇ ਤੁਹਾਡਾ ਉਧਾਰ ਬਕਾਇਆ {date} ਤੱਕ {amt} ਹੈ।{due}\nਕਿਰਪਾ ਕਰਕੇ ਜਲਦੀ ਭੁਗਤਾਨ ਕਰੋ।\nਧੰਨਵਾਦ 🙏\n{pump} {phone}", due:"\nਬਿੱਲ ਨੰ. {no} ਦੀ ਆਖਰੀ ਤਾਰੀਖ {dd} ਸੀ।",
+     bill:"ਸਤ ਸ੍ਰੀ ਅਕਾਲ {name} ਜੀ,\n{pump} ਦਾ ਬਿੱਲ ਨੰ. {no} ({from} ਤੋਂ {to}):\nਪਿਛਲਾ ਬਕਾਇਆ: {open}\nਖਰੀਦ: {dr}\nਵਿਆਜ: {int}\nਪ੍ਰਾਪਤ ਭੁਗਤਾਨ: {cr}\nਭੁਗਤਾਨਯੋਗ ਰਕਮ: {closing}\nਕਿਰਪਾ ਕਰਕੇ {due} ਤੱਕ ਭੁਗਤਾਨ ਕਰੋ।\nਧੰਨਵਾਦ 🙏\n{phone}"}
+};
+
+/* ============================== utils ============================== */
+const LS = {
+  get(k,d=null){ try{ const v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>{ const n=Number(v); return isFinite(n)?n:0; };
+const r2=n=>Math.round((num(n)+Number.EPSILON)*100)/100;
+const money=n=>(num(n)<0?'-':'')+'₹'+Math.abs(num(n)).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const money0=n=>(num(n)<0?'-':'')+'₹'+Math.abs(Math.round(num(n))).toLocaleString('en-IN');
+const ltr=n=>num(n).toLocaleString('en-IN',{maximumFractionDigits:2});
+function localDate(d){ const z=new Date(d.getTime()-d.getTimezoneOffset()*60000); return z.toISOString().slice(0,10); }
+const today=()=>localDate(new Date());
+function addDays(ds,n){ const d=new Date(ds+'T00:00:00'); d.setDate(d.getDate()+n); return localDate(d); }
+function daysBetween(a,b){ return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000); }
+function endOfMonth(ds){ const d=new Date(ds+'T00:00:00'); return localDate(new Date(d.getFullYear(),d.getMonth()+1,0)); }
+const fd=d=>d?String(d).slice(0,10).split('-').reverse().join('-'):'';
+const uid=()=>(crypto.randomUUID?crypto.randomUUID():'id-'+Date.now().toString(36)+Math.random().toString(36).slice(2));
+const clone=o=>JSON.parse(JSON.stringify(o));
+function t(k,vars){ let s=(I18N[S.lang]&&I18N[S.lang][k])||I18N.en[k]||k; if(vars) for(const [a,b] of Object.entries(vars)) s=s.split('{'+a+'}').join(b); return s; }
+function toast(msg,ms=2600){ const el=$('#toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove('show'),ms); }
+function act(fn){ return async function(e){ const btn=e&&e.currentTarget; if(btn&&btn.tagName==='BUTTON') btn.disabled=true; try{ await fn.call(this,e); }catch(err){ console.error(err); toast('⚠ '+niceErr(err),4500); } finally{ if(btn&&btn.tagName==='BUTTON') btn.disabled=false; } }; }
+function niceErr(err){ const m=(err&&(err.message||err.error_description))||String(err); if(/row-level security|permission|JSON object requested|0 rows/i.test(m)) return t('err_owner'); return m; }
+function downloadFile(name,content,type){ const blob=new Blob([content],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500); }
+function toCSV(head,rows){ const q=v=>{ const s=String(v??''); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }; return '﻿'+[head.map(q).join(','),...rows.map(r=>r.map(q).join(','))].join('\r\n'); }
+function inWords(n){
+  n=Math.round(Math.abs(num(n)));
+  const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  const two=x=>x<20?a[x]:b[Math.floor(x/10)]+(x%10?' '+a[x%10]:'');
+  const three=x=>x>=100?a[Math.floor(x/100)]+' Hundred'+(x%100?' '+two(x%100):''):two(x);
+  const rec=x=>{ if(x===0) return ''; const cr=Math.floor(x/1e7), rest=x%1e7, l=Math.floor(rest/1e5), th=Math.floor((rest%1e5)/1000), h=rest%1000;
+    return [cr?rec(cr)+' Crore':'', l?two(l)+' Lakh':'', th?two(th)+' Thousand':'', h?three(h):''].filter(Boolean).join(' '); };
+  return 'Rupees '+(n===0?'Zero':rec(n))+' Only';
+}
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+/* ============================== state ============================== */
+const TABLES=['settings','rates','products','customers','vehicles','transactions','bills','profiles'];
+const S={ lang:LS.get('ppcm_lang','en'), profile:null, ready:false, data:Object.fromEntries(TABLES.map(k=>[k,[]])), rf:null, apTab:'pending', custQ:'', custType:'' };
+let B=null;
+const isOwner=()=>S.profile&&S.profile.role==='owner';
+const settings=()=>S.data.settings[0]||{};
+const DEBIT=new Set(['slip','interest','debit_note']);
+const sgn=tx=>DEBIT.has(tx.kind)?1:-1;
+const custById=id=>S.data.customers.find(c=>c.id===id);
+const vehById=id=>S.data.vehicles.find(v=>v.id===id);
+const profName=id=>{ const p=S.data.profiles.find(p=>p.id===id); return p?(p.name||p.email||'—'):'—'; };
+const byDate=(x,y)=>(x.date<y.date?-1:x.date>y.date?1:(x.created_at<y.created_at?-1:x.created_at>y.created_at?1:0));
+function rateOn(date,D=S.data){ let best=null; for(const r of D.rates){ if(r.date<=date&&(!best||r.date>best.date||(r.date===best.date&&r.created_at>best.created_at))) best=r; } return best; }
+const typeLabel=ty=>t('t_'+(ty||'individual'));
+const prodLabel=tx=>tx.product==='petrol'?t('petrol'):tx.product==='diesel'?t('diesel'):(tx.product_name||t('lube'));
+function describeTx(tx){
+  if(tx.kind==='slip'){ const unit=tx.product==='lube'?'':' L'; return `${prodLabel(tx)} — ${ltr(tx.qty)}${unit} @ ${money(tx.rate)}`; }
+  if(tx.kind==='payment') return `${t('k_payment')} — ${t(tx.mode||'cash')}${tx.ref_no?' · '+tx.ref_no:''}`;
+  return t('k_'+tx.kind)+(tx.note?' — '+tx.note:'');
+}
+
+/* ===================== ledger / billing logic ===================== */
+function calcTo(c,from){
+  switch(c.cycle){
+    case 'weekly': return addDays(from,6);
+    case 'fortnightly': return addDays(from,14);
+    case 'monthly': return endOfMonth(from);
+    case 'custom': return addDays(from,Math.max(1,num(c.cycle_days)||30)-1);
+    default: return null; // seasonal = manual only
+  }
+}
+function billPeriod(c,s,lb){
+  const e=s.earliestUnbilled; if(!e) return {from:null,to:null,has:false};
+  let from=lb?addDays(lb.period_to,1):e; let to=calcTo(c,from);
+  if(to&&e>to){ from=c.cycle==='monthly'?e.slice(0,8)+'01':e; to=calcTo(c,from); }
+  return {from,to,has:!!to&&e<=to};
+}
+function computeStats(D=S.data){
+  const m=new Map(), td=today();
+  for(const c of D.customers) m.set(c.id,{approved:0,pending:0,unbilledCredits:0,earliestUnbilled:null,lastActivity:null});
+  for(const tx of D.transactions){
+    const s=m.get(tx.customer_id); if(!s||tx.status==='rejected') continue;
+    const a=num(tx.amount)*sgn(tx);
+    if(tx.status==='approved'){
+      s.approved+=a;
+      if(!tx.bill_id){ if(!DEBIT.has(tx.kind)) s.unbilledCredits+=num(tx.amount); if(!s.earliestUnbilled||tx.date<s.earliestUnbilled) s.earliestUnbilled=tx.date; }
+    } else s.pending+=a;
+    if(!s.lastActivity||tx.date>s.lastActivity) s.lastActivity=tx.date;
+  }
+  const last=new Map();
+  for(const b of D.bills){ const l=last.get(b.customer_id); if(!l||b.period_to>l.period_to||(b.period_to===l.period_to&&num(b.bill_no)>num(l.bill_no))) last.set(b.customer_id,b); }
+  for(const c of D.customers){
+    const s=m.get(c.id); s.approved=r2(s.approved); s.pending=r2(s.pending); s.total=r2(s.approved+s.pending);
+    const lb=last.get(c.id)||null; s.lastBill=lb;
+    s.overdueAmt=lb?Math.max(0,r2(num(lb.closing)-s.unbilledCredits)):0;
+    s.overdue=!!(lb&&lb.due_date<td&&s.overdueAmt>0.5);
+    s.limit=num(c.credit_limit); s.usePct=s.limit>0?s.total/s.limit:0;
+    s.overLimit=s.limit>0&&s.total>s.limit; s.nearLimit=s.limit>0&&!s.overLimit&&s.usePct>=0.9;
+    s.period=billPeriod(c,s,lb); s.billDue=!!(c.active!==false&&s.period.to&&s.period.to<td&&s.period.has);
+  }
+  return m;
+}
+function computeBill(c,from,to,txs,lastB){
+  const items=txs.filter(x=>x.customer_id===c.id&&x.status==='approved'&&!x.bill_id&&x.date<=to).sort(byDate);
+  let debits=0,credits=0; for(const x of items){ if(DEBIT.has(x.kind)) debits+=num(x.amount); else credits+=num(x.amount); }
+  let interest=0,interestNote='';
+  const rate=num(c.interest_rate);
+  if(rate>0&&lastB&&lastB.due_date<to){
+    const paidByDue=items.filter(x=>!DEBIT.has(x.kind)&&x.date<=lastB.due_date).reduce((a,x)=>a+num(x.amount),0);
+    const unpaid=r2(num(lastB.closing)-paidByDue);
+    if(unpaid>0){ const d=daysBetween(lastB.due_date,to); interest=r2(unpaid*rate/100*d/30); interestNote=`${rate}% p.m. on ${money(unpaid)} × ${d} days (bill #${lastB.bill_no})`; }
+  }
+  const opening=lastB?num(lastB.closing):0;
+  if(items.length&&items[0].date<from) from=items[0].date;
+  return {items,from,to,opening:r2(opening),debits:r2(debits),credits:r2(credits),interest,interestNote,
+    closing:r2(opening+debits+interest-credits),due_date:addDays(to,num(c.due_days)),
+    pendingCount:txs.filter(x=>x.customer_id===c.id&&x.status==='pending'&&x.date<=to).length};
+}
+async function saveBill(c,cb){
+  const ids=cb.items.map(x=>x.id);
+  if(cb.interest>0){ const it=await B.insert('transactions',{kind:'interest',customer_id:c.id,date:cb.to,amount:cb.interest,note:cb.interestNote}); ids.push(it.id); }
+  const bill=await B.insert('bills',{customer_id:c.id,period_from:cb.from,period_to:cb.to,opening:cb.opening,debits:cb.debits,credits:cb.credits,interest:cb.interest,closing:cb.closing,due_date:cb.due_date});
+  if(ids.length) await B.updateMany('transactions',ids,{bill_id:bill.id});
+  return bill;
+}
+function ageing(cid,asOf,D=S.data){
+  const txs=D.transactions.filter(x=>x.customer_id===cid&&x.status==='approved'&&x.date<=asOf).sort(byDate);
+  let credit=txs.filter(x=>!DEBIT.has(x.kind)).reduce((a,x)=>a+num(x.amount),0);
+  const b=[0,0,0,0]; let total=0;
+  for(const x of txs.filter(x=>DEBIT.has(x.kind))){
+    let amt=num(x.amount); const use=Math.min(credit,amt); credit-=use; amt-=use;
+    if(amt>0.001){ const age=daysBetween(x.date,asOf); b[age<=30?0:age<=60?1:age<=90?2:3]+=amt; total+=amt; }
+  }
+  return {total:r2(total-credit),b:b.map(r2)};
+}
+
+/* ============================== backends ============================== */
+class LocalBackend{
+  constructor(){ this.kind='demo'; this.key='ppcm_demo_v1'; }
+  async init(){ this.db=LS.get(this.key)||seedDemo(); this.save(); }
+  save(){ LS.set(this.key,this.db); }
+  me(){ return this.db.profiles.find(p=>p.id===this.db.currentUser)||null; }
+  async getSession(){ const p=this.me(); return p?{profile:clone(p)}:null; }
+  async loginAs(id){ this.db.currentUser=id; this.save(); }
+  async signOut(){ this.db.currentUser=null; this.save(); }
+  async list(tb){ return clone(this.db[tb]||[]); }
+  async insert(tb,row){
+    const me=this.me(); if(!me) throw new Error('Not logged in');
+    const own=me.role==='owner'&&me.active;
+    if(tb!=='transactions'&&!own) throw new Error(t('err_owner'));
+    const r={...row,id:uid(),created_at:new Date().toISOString()};
+    if(tb==='transactions'){
+      if(!own&&!['slip','payment'].includes(r.kind)) throw new Error(t('err_owner'));
+      r.created_by=me.id; r.bill_id=null;
+      if(own){ r.status='approved'; r.approved_by=me.id; r.approved_at=r.created_at; } else { r.status='pending'; r.approved_by=null; r.approved_at=null; }
+    }
+    if(tb==='bills'){ r.bill_no=this.db.bills.reduce((m,b)=>Math.max(m,num(b.bill_no)),0)+1; r.created_by=me.id; }
+    this.db[tb].push(r); this.save(); return clone(r);
+  }
+  async update(tb,id,patch){
+    const me=this.me(); if(!me||me.role!=='owner') throw new Error(t('err_owner'));
+    const r=this.db[tb].find(x=>x.id===id); if(!r) throw new Error('Not found');
+    if(tb==='transactions'&&patch.status&&patch.status!==r.status){ patch={...patch,approved_by:me.id,approved_at:new Date().toISOString()}; }
+    Object.assign(r,patch); this.save(); return clone(r);
+  }
+  async updateMany(tb,ids,patch){ for(const id of ids) await this.update(tb,id,patch); }
+}
+class SupaBackend{
+  constructor(url,key){ this.kind='cloud'; this.url=url; this.key=key; }
+  async init(){
+    const mod=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    this.sb=mod.createClient(this.url,this.key,{auth:{persistSession:true,autoRefreshToken:true}});
+    this.sb.auth.onAuthStateChange((ev)=>{ if(ev==='SIGNED_OUT'){ S.profile=null; S.ready=false; render(); } });
+  }
+  async getSession(){
+    const {data:{session}}=await this.sb.auth.getSession(); if(!session) return null;
+    const {data:p,error}=await this.sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();
+    if(error) throw error; return {user:session.user,profile:p||{id:session.user.id,email:session.user.email,role:'staff',active:false}};
+  }
+  async signIn(email,password){ const {error}=await this.sb.auth.signInWithPassword({email,password}); if(error) throw error; }
+  async signUp(email,password,name,phone){ const {data,error}=await this.sb.auth.signUp({email,password,options:{data:{name,phone}}}); if(error) throw error; return data; }
+  async signOut(){ await this.sb.auth.signOut(); }
+  async list(tb){
+    let all=[],from=0; const step=1000;
+    for(;;){ const {data,error}=await this.sb.from(tb).select('*').order('created_at',{ascending:true}).range(from,from+step-1); if(error) throw error; all=all.concat(data); if(data.length<step) break; from+=step; }
+    return all;
+  }
+  async insert(tb,row){ const {data,error}=await this.sb.from(tb).insert(row).select().single(); if(error) throw error; return data; }
+  async update(tb,id,patch){ const {data,error}=await this.sb.from(tb).update(patch).eq('id',id).select().single(); if(error) throw error; return data; }
+  async updateMany(tb,ids,patch){ for(let i=0;i<ids.length;i+=200){ const {error}=await this.sb.from(tb).update(patch).in('id',ids.slice(i,i+200)); if(error) throw error; } }
+  subscribe(cb){ this.sb.channel('tx-live').on('postgres_changes',{event:'*',schema:'public',table:'transactions'},cb).subscribe(); }
+}
+
+/* ============================== demo seed ============================== */
+function seedDemo(){
+  const rnd=mulberry32(7), td=today(), iso=d=>d+'T09:00:00.000Z';
+  const pick=a=>a[Math.floor(rnd()*a.length)];
+  const owner={id:'u-owner',name:'Pump Owner',email:'owner@demo',phone:'',role:'owner',active:true,created_at:iso(addDays(td,-60))};
+  const s1={id:'u-staff1',name:'Gurpreet',email:'gurpreet@demo',phone:'',role:'staff',active:true,created_at:iso(addDays(td,-60))};
+  const s2={id:'u-staff2',name:'Ravi',email:'ravi@demo',phone:'',role:'staff',active:false,created_at:iso(addDays(td,-2))};
+  const D={currentUser:null,profiles:[owner,s1,s2],
+    settings:[{id:1,pump_name:'Demo Filling Station',company:'Dealer code: 000000',address:'G.T. Road, Moga, Punjab',gstin:'03XXXXX0000X1ZX',phone:'98000 00000',lube_gst:18,bill_footer:'Thank you for your business.',created_at:iso(addDays(td,-60))}],
+    rates:[],products:[],customers:[],vehicles:[],transactions:[],bills:[]};
+  [[-60,97.4,87.7],[-21,97.65,87.95],[0,97.9,88.15]].forEach(([d,p,ds])=>D.rates.push({id:uid(),date:addDays(td,d),petrol:p,diesel:ds,created_by:owner.id,created_at:iso(addDays(td,d))}));
+  [['Engine Oil 15W-40 (1 L)',420],['Engine Oil 15W-40 (5 L)',1950],['Tractor Oil (5 L)',1650],['Coolant (1 L)',180],['2T Oil (1 L)',310]].forEach(([n,p])=>D.products.push({id:uid(),name:n,unit:'pc',price:p,gst_rate:18,active:true,created_at:iso(addDays(td,-60))}));
+  const mk=(o)=>{ const c={id:uid(),phone:'',gstin:'',address:'',note:'',active:true,cycle_days:30,interest_rate:0,msg_lang:'hi',created_at:iso(addDays(td,-60)),...o}; D.customers.push(c); return c; };
+  const sharma=mk({name:'Sharma Transport Co.',type:'fleet',phone:'9876500001',gstin:'03AAAAA0000A1Z5',address:'Transport Nagar, Moga',credit_limit:900000,cycle:'monthly',due_days:15,interest_rate:1.5});
+  const gurdev=mk({name:'Gurdev Singh',type:'farmer',phone:'9876500002',address:'Village Dhalleke',credit_limit:50000,cycle:'seasonal',due_days:30,msg_lang:'pa',note:'Pays after paddy harvest'});
+  const water=mk({name:'District Water Works Dept.',type:'business',phone:'9876500003',address:'Civil Lines, Moga',credit_limit:150000,cycle:'monthly',due_days:30,msg_lang:'en'});
+  const amit=mk({name:'Amit Kumar',type:'individual',phone:'9876500004',credit_limit:25000,cycle:'weekly',due_days:3,interest_rate:2});
+  const veh=(c,number,vtype,fuel)=>{ const v={id:uid(),customer_id:c.id,number,vtype,fuel,active:true,created_at:iso(addDays(td,-60))}; D.vehicles.push(v); return v; };
+  const sv=[veh(sharma,'PB 29 K 4521','truck','diesel'),veh(sharma,'PB 29 L 7788','truck','diesel'),veh(sharma,'PB 29 M 1203','pickup','diesel')];
+  const gv=[veh(gurdev,'PB 29 T 0911','tractor','diesel')];
+  const wv=[veh(water,'PB 29 G 0045','car','diesel'),veh(water,'DG SET-1','genset','diesel')];
+  const av=[veh(amit,'PB 29 C 5566','car','petrol'),veh(amit,'PB 29 S 3344','bike','petrol')];
+  let slipNo=4100;
+  const tx=(o,daysAgo)=>{ const date=addDays(td,-daysAgo); const pend=daysAgo<=1&&o.kind==='slip'&&rnd()<0.7; const by=pend?s1.id:(rnd()<0.6?s1.id:owner.id);
+    const r={id:uid(),bill_id:null,vehicle_id:null,vehicle_no:'',product:null,product_id:null,product_name:null,qty:null,rate:null,gst_rate:0,slip_no:'',driver:'',odometer:null,po_no:'',mode:null,ref_no:'',note:'',flags:'',reject_reason:null,
+      date,created_by:by,created_at:date+'T'+String(8+Math.floor(rnd()*12)).padStart(2,'0')+':'+String(Math.floor(rnd()*60)).padStart(2,'0')+':00.000Z',
+      status:pend?'pending':'approved',approved_by:pend?null:owner.id,approved_at:pend?null:date+'T21:00:00.000Z',...o};
+    D.transactions.push(r); return r; };
+  const fuelSlip=(c,v,lo,hi,daysAgo,extra={})=>{ const date=addDays(td,-daysAgo); const rt=rateOn(date,D)[v.fuel]; const q=Math.round((lo+rnd()*(hi-lo))*100)/100;
+    return tx({kind:'slip',customer_id:c.id,vehicle_id:v.id,vehicle_no:v.number,product:v.fuel,qty:q,rate:rt,amount:r2(q*rt),slip_no:String(++slipNo),driver:pick(['Balwinder','Sukhdev','Raju','Harpal','']),...extra},daysAgo); };
+  for(let d=48;d>=0;d--){
+    if(rnd()<0.8) fuelSlip(sharma,pick(sv),90,180,d);
+    if(rnd()<0.35) fuelSlip(sharma,pick(sv),60,140,d);
+    if(d%6===0) fuelSlip(gurdev,gv[0],30,60,d);
+    if(d%4===1) fuelSlip(water,pick(wv),20,45,d,{po_no:'WW/IND/'+(300+d)});
+    if(d%2===0) fuelSlip(amit,pick(av),4,15,d);
+  }
+  const lp=D.products[2]; tx({kind:'slip',customer_id:gurdev.id,vehicle_id:gv[0].id,vehicle_no:gv[0].number,product:'lube',product_id:lp.id,product_name:lp.name,qty:1,rate:lp.price,gst_rate:18,amount:lp.price,slip_no:String(++slipNo)},20);
+  const rej=fuelSlip(gurdev,gv[0],40,40,9); rej.status='rejected'; rej.reject_reason='Duplicate slip'; rej.created_by=s1.id;
+  const pay=(c,amt,daysAgo,mode,ref)=>tx({kind:'payment',customer_id:c.id,amount:amt,mode,ref_no:ref||''},daysAgo);
+  pay(sharma,180000,20,'bank','UTR 4471902'); pay(sharma,200000,12,'cheque','Chq 004512'); pay(amit,6000,35,'upi','UPI 51882'); pay(amit,5500,26,'cash'); pay(amit,5000,19,'upi','UPI 77310');
+  // generate past bills for Sharma & Amit (Water Works left ready-to-generate)
+  for(const c of [sharma,amit]){
+    for(let k=0;k<12;k++){
+      const st=computeStats(D).get(c.id); if(!st.billDue) break;
+      const cb=computeBill(c,st.period.from,st.period.to,D.transactions,st.lastBill);
+      const ids=cb.items.map(x=>x.id);
+      if(cb.interest>0){ const it=tx({kind:'interest',customer_id:c.id,amount:cb.interest,note:cb.interestNote,created_by:owner.id},daysBetween(cb.to,td)); it.created_by=owner.id; it.status='approved'; ids.push(it.id); }
+      const bill={id:uid(),bill_no:D.bills.length+1,customer_id:c.id,period_from:cb.from,period_to:cb.to,opening:cb.opening,debits:cb.debits,credits:cb.credits,interest:cb.interest,closing:cb.closing,due_date:cb.due_date,created_by:owner.id,created_at:iso(addDays(cb.to,1))};
+      D.bills.push(bill); D.transactions.forEach(x=>{ if(ids.includes(x.id)) x.bill_id=bill.id; });
+    }
+  }
+  return D;
+}
+
+/* ============================== UI helpers ============================== */
+function openModal(title,html,mount){
+  const m=$('#modal'), box=$('.box',m);
+  box.innerHTML=`<div class="row" style="margin-bottom:12px"><h2 style="margin:0">${esc(title)}</h2><span class="sp"></span><button class="btn sm" data-close>✕</button></div>${html}`;
+  m.classList.remove('hidden');
+  $$('[data-close]',box).forEach(b=>b.onclick=closeModal);
+  m.onclick=e=>{ if(e.target===m) closeModal(); };
+  if(mount) mount(box);
+  const f=$('input:not([type=hidden]):not([readonly]),select',box); if(f&&window.innerWidth>700) f.focus();
+}
+function closeModal(){ $('#modal').classList.add('hidden'); $('#modal .box').innerHTML=''; }
+function comboHTML(id,ph){ return `<div class="combo" id="${id}"><input type="text" class="combo-in" placeholder="${esc(ph)}" autocomplete="off"><div class="combo-list"></div></div>`; }
+function mountCombo(root,id,items,onChange,initial){
+  const el=$('#'+id,root), inp=$('.combo-in',el), list=$('.combo-list',el); let val=null;
+  const set=(v,silent)=>{ val=v||null; const it=items.find(i=>i.value===v); inp.value=it?it.label:''; list.classList.remove('open'); if(!silent) onChange(val); };
+  const draw=()=>{ const q=inp.value.trim().toLowerCase(); const cur=items.find(i=>i.value===val);
+    const f=items.filter(i=>!q||(cur&&q===cur.label.toLowerCase())||(i.label+' '+(i.sub||'')+' '+(i.search||'')).toLowerCase().includes(q)).slice(0,80);
+    list.innerHTML=f.length?f.map(i=>`<div data-v="${esc(i.value)}"><b>${esc(i.label)}</b>${i.sub?`<div class="small muted">${esc(i.sub)}</div>`:''}</div>`).join(''):`<div class="muted">${t('nothing')}</div>`;
+    list.classList.add('open'); };
+  inp.addEventListener('focus',()=>{ draw(); setTimeout(()=>inp.select(),0); });
+  inp.addEventListener('input',draw);
+  list.addEventListener('mousedown',e=>e.preventDefault());
+  list.addEventListener('click',e=>{ const d=e.target.closest('[data-v]'); if(d){ set(d.dataset.v); inp.blur(); } });
+  inp.addEventListener('blur',()=>setTimeout(()=>{ list.classList.remove('open'); const it=items.find(i=>i.value===val); inp.value=it?it.label:''; },200));
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ const first=$('[data-v]',list); if(first){ e.preventDefault(); set(first.dataset.v); inp.blur(); } } });
+  if(initial) set(initial,false);
+  return {get:()=>val,set};
+}
+function custItems(){
+  return S.data.customers.filter(c=>c.active!==false).sort((a,b)=>a.name.localeCompare(b.name)).map(c=>({value:c.id,label:c.name,sub:[typeLabel(c.type),c.phone].filter(Boolean).join(' · '),
+    search:S.data.vehicles.filter(v=>v.customer_id===c.id).map(v=>v.number+' '+v.number.replace(/\s/g,'')).join(' ')}));
+}
+function chip(status){ return `<span class="chip ${status}">${t(status)}</span>`; }
+function waLink(phone,text){ let d=String(phone||'').replace(/\D/g,''); if(d.length===10) d='91'+d; else if(d.length===11&&d[0]==='0') d='91'+d.slice(1); return 'https://wa.me/'+d+'?text='+encodeURIComponent(text); }
+function fill(tpl,v){ return Object.entries(v).reduce((s,[k,x])=>s.split('{'+k+'}').join(x),tpl); }
+function reminderText(c,s){
+  const L=WA[c.msg_lang]||WA.hi, st=settings();
+  const due=s.lastBill&&s.overdue?fill(L.due,{no:s.lastBill.bill_no,dd:fd(s.lastBill.due_date)}):'';
+  return fill(L.rem,{name:c.name,pump:st.pump_name||'',amt:money(s.approved),date:fd(today()),due,phone:st.phone||''});
+}
+function billText(c,b){
+  const L=WA[c.msg_lang]||WA.hi, st=settings();
+  return fill(L.bill,{name:c.name,pump:st.pump_name||'',no:b.bill_no,from:fd(b.period_from),to:fd(b.period_to),open:money(b.opening),dr:money(b.debits),int:money(b.interest),cr:money(b.credits),closing:money(b.closing),due:fd(b.due_date),phone:st.phone||''});
+}
+function openWA(c,text){ if(!c.phone){ toast(t('wa_none')); return; } window.open(waLink(c.phone,text),'_blank'); }
+async function reload(...tbs){ const res=await Promise.all(tbs.map(tb=>B.list(tb))); tbs.forEach((tb,i)=>S.data[tb]=res[i]); }
+async function loadAll(){ await reload(...TABLES); S.ready=true; }
+function curView(){ return ((location.hash||'#/dashboard').split('/')[1])||'dashboard'; }
+function go(h){ if(location.hash===h) render(); else location.hash=h; }
+
+/* ============================== shell ============================== */
+function navItems(){
+  const pend=S.data.transactions.filter(x=>x.status==='pending').length;
+  if(isOwner()) return [['dashboard','🏠'],['slip','⛽','new_slip'],['payment','💰'],['approvals','✅','approvals',pend],['customers','👥'],['bills','🧾'],['reports','📊'],['staff','🪪'],['settings','⚙️']];
+  return [['dashboard','🏠'],['slip','⛽','new_slip'],['payment','💰'],['approvals','📋','my_entries'],['customers','👥']];
+}
+function shellHTML(view){
+  const nav=navItems(), st=settings();
+  const link=(n,cls)=>`<a href="#/${n[0]}" class="${view===n[0]?'on':''}"><span class="i">${n[1]}</span><span>${t(n[2]||n[0])}</span>${n[3]?`<span class="cnt">${n[3]}</span>`:''}</a>`;
+  const mob=isOwner()?[nav[0],nav[1],nav[2],nav[3],['more','☰','more']]:nav;
+  const langSel=`<select id="langSel" aria-label="Language">${[['en','EN'],['hi','हिं'],['pa','ਪੰ']].map(([k,l])=>`<option value="${k}" ${S.lang===k?'selected':''}>${l}</option>`).join('')}</select>`;
+  const demo=B.kind==='demo'?`<div class="demo-bar">${t('demo_mode')} ${t('demo_as')}: <b>${esc(S.profile.name)}</b> <button id="demoSwitch">${isOwner()?t('staffr'):t('owner')} ⇄</button></div>`:'';
+  return `${demo}<div class="shell"><aside class="side"><div class="brand"><div class="logo">⛽</div><div>${esc(st.pump_name||'Petrol Pump')}<small>${t('app')}</small></div></div>${nav.map(n=>link(n)).join('')}</aside>
+  <div><div class="top"><div class="ttl">${esc(st.pump_name||'')}</div><span class="sp"></span>${langSel}<span class="who"><span class="nm">${esc(S.profile.name||S.profile.email||'')} · </span>${isOwner()?t('owner'):t('staffr')}</span><button class="btn sm" id="logoutBtn" title="${t('logout')}">⎋</button></div>
+  <main id="main"></main></div></div>
+  <nav class="bottom">${mob.map(n=>n[0]==='more'?`<a href="#/more" class="${['more','customers','bills','reports','staff','settings'].includes(view)?'on':''}"><span class="i">☰</span>${t('more')}</a>`:link(n)).join('')}</nav>`;
+}
+function bindShell(){
+  $('#langSel').onchange=e=>{ S.lang=e.target.value; LS.set('ppcm_lang',S.lang); document.documentElement.lang=S.lang; render(); };
+  $('#logoutBtn').onclick=act(async()=>{ await B.signOut(); S.profile=null; S.ready=false; location.hash='#/dashboard'; render(); });
+  const ds=$('#demoSwitch'); if(ds) ds.onclick=act(async()=>{ await B.loginAs(isOwner()?'u-staff1':'u-owner'); S.profile=(await B.getSession()).profile; if(!isOwner()&&['bills','reports','staff','settings','customer','bill'].includes(curView())) location.hash='#/dashboard'; render(); });
+}
+
+/* ============================== views ============================== */
+const OWNER_ONLY=new Set(['bills','bill','reports','staff','settings']);
+const V={};
+
+V.more=()=>({html:`<h1>${t('more')}</h1><div class="card">${[['customers','👥'],['bills','🧾'],['reports','📊'],['staff','🪪'],['settings','⚙️']].map(([k,i])=>`<a class="item" href="#/${k}" style="text-decoration:none;color:inherit"><span style="font-size:22px">${i}</span><div class="main b">${t(k)}</div><span class="muted">›</span></a>`).join('')}</div>`});
+
+function ratesCard(){
+  const td=today(), r=rateOn(td), isToday=r&&r.date===td;
+  return `<div class="card"><div class="row" style="margin-bottom:8px"><h2 style="margin:0">${t('todays_rates')}</h2><span class="sp"></span>${isOwner()?`<button class="btn sm" id="ratesBtn">✎ ${t('set_rates')}</button>`:''}</div>
+  ${isToday?'':`<div class="alert warn">${t('rate_missing')}${r?` (${fd(r.date)})`:''}</div>`}
+  <div class="rates"><div class="rate"><div class="small muted">${t('petrol')}</div><div class="v">${r&&r.petrol?money(r.petrol):'—'}</div></div><div class="rate"><div class="small muted">${t('diesel')}</div><div class="v">${r&&r.diesel?money(r.diesel):'—'}</div></div></div></div>`;
+}
+function openRatesModal(){
+  const r=rateOn(today())||{};
+  openModal(t('set_rates'),`<div class="form"><div><label>${t('date')}</label><input type="date" id="rd" value="${today()}"></div><div><label>${t('petrol')} ₹/L</label><input id="rp" type="number" step="0.01" inputmode="decimal" value="${r.petrol??''}"></div><div><label>${t('diesel')} ₹/L</label><input id="rdl" type="number" step="0.01" inputmode="decimal" value="${r.diesel??''}"></div></div>
+   <div class="row" style="margin-top:16px"><span class="sp"></span><button class="btn" data-close>${t('cancel')}</button><button class="btn p" id="rsave">${t('save')}</button></div>`,box=>{
+    $('#rsave',box).onclick=act(async()=>{ const p=num($('#rp',box).value), d=num($('#rdl',box).value), dt=$('#rd',box).value;
+      if(!dt||p<=0||d<=0) throw new Error(t('err_req'));
+      await B.insert('rates',{date:dt,petrol:p,diesel:d}); await reload('rates'); closeModal(); toast(t('saved')); render(); });
+  });
+}
+function bindRates(root){ const b=$('#ratesBtn',root); if(b) b.onclick=openRatesModal; }
+function txLine(x,showCust=true){
+  const c=custById(x.customer_id);
+  return `<div class="item"><div class="main"><div class="b">${showCust?esc(c?c.name:'?')+' · ':''}<span class="num">${money(x.amount)}</span></div>
+   <div class="small muted">${fd(x.date)} · ${esc(describeTx(x))}${x.vehicle_no?' · '+esc(x.vehicle_no):''}${x.slip_no?' · #'+esc(x.slip_no):''}</div>
+   <div class="small muted">${t('created_by')}: ${esc(profName(x.created_by))}${x.reject_reason?` · <span class="red">${esc(x.reject_reason)}</span>`:''}</div></div>${chip(x.status)}</div>`;
+}
+
+V.dashboard=()=>{
+  const st=computeStats(), td=today(), T=S.data.transactions;
+  const tSl=T.filter(x=>x.kind==='slip'&&x.date===td&&x.status!=='rejected');
+  const L=p=>tSl.filter(x=>x.product===p).reduce((a,x)=>a+num(x.qty),0);
+  const salesAmt=tSl.reduce((a,x)=>a+num(x.amount),0);
+  const tPay=T.filter(x=>x.kind==='payment'&&x.date===td&&x.status!=='rejected').reduce((a,x)=>a+num(x.amount),0);
+  if(!isOwner()){
+    const mine=T.filter(x=>x.created_by===S.profile.id).sort((a,b)=>b.created_at<a.created_at?-1:1).slice(0,15);
+    return {html:`<h1>${t('dashboard')}</h1>${ratesCard()}
+      <div class="grid g2" style="margin-bottom:14px"><a class="btn p big" href="#/slip">⛽ ${t('new_slip_t')}</a><a class="btn big" href="#/payment">💰 ${t('payment_t')}</a></div>
+      <div class="card"><h2>${t('my_entries')}</h2>${mine.length?mine.map(x=>txLine(x)).join(''):`<div class="empty">${t('nothing')}</div>`}</div>`,mount:bindRates};
+  }
+  let out=0; for(const s of st.values()) out+=s.approved;
+  const pend=T.filter(x=>x.status==='pending');
+  const cs=S.data.customers;
+  const overdue=cs.filter(c=>st.get(c.id).overdue).sort((a,b)=>st.get(b.id).overdueAmt-st.get(a.id).overdueAmt);
+  const lim=cs.filter(c=>st.get(c.id).overLimit||st.get(c.id).nearLimit).sort((a,b)=>st.get(b.id).usePct-st.get(a.id).usePct);
+  const due=cs.filter(c=>st.get(c.id).billDue);
+  const recent=[...T].sort((a,b)=>b.created_at<a.created_at?-1:1).slice(0,8);
+  const custRow=(c,right)=>`<a class="item" href="#/customer/${c.id}" style="text-decoration:none;color:inherit"><div class="main"><div class="b">${esc(c.name)}</div><div class="small muted">${typeLabel(c.type)}${c.phone?' · '+esc(c.phone):''}</div></div><div style="text-align:right">${right}</div></a>`;
+  return {html:`<h1>${t('dashboard')}</h1>
+   <div class="grid g4" style="margin-bottom:14px">
+    <div class="card kpi"><div class="l">${t('total_out')}</div><div class="v">${money0(out)}</div><div class="s">${t('approved')}</div></div>
+    <a class="card kpi ${pend.length?'hl':''}" href="#/approvals" style="text-decoration:none;color:inherit"><div class="l">${t('pending_appr')}</div><div class="v">${pend.length}</div><div class="s">${money0(pend.reduce((a,x)=>a+num(x.amount)*sgn(x),0))}</div></a>
+    <div class="card kpi"><div class="l">${t('today_sales')}</div><div class="v">${money0(salesAmt)}</div><div class="s">${t('petrol')} ${ltr(L('petrol'))} L · ${t('diesel')} ${ltr(L('diesel'))} L</div></div>
+    <div class="card kpi"><div class="l">${t('today_pay')}</div><div class="v">${money0(tPay)}</div><div class="s">&nbsp;</div></div>
+   </div>
+   <div class="grid g2">
+    <div>${ratesCard()}
+     <div class="card"><div class="row" style="margin-bottom:6px"><h2 style="margin:0">${t('bills_due')} (${due.length})</h2><span class="sp"></span>${due.length?`<button class="btn sm p" id="genAll">${t('generate_all')}</button>`:''}</div>
+      ${due.length?due.map(c=>{ const p=st.get(c.id).period; return custRow(c,`<div class="small">${fd(p.from)} → ${fd(p.to)}</div><div class="small muted">${t('c_'+c.cycle)}</div>`); }).join(''):`<div class="empty">${t('nothing')}</div>`}</div>
+    </div>
+    <div>
+     <div class="card"><h2>⚠ ${t('overdue_cust')} (${overdue.length})</h2>${overdue.length?overdue.map(c=>{ const s=st.get(c.id); return custRow(c,`<div class="b red num">${money0(s.overdueAmt)}</div><div class="small muted">${t('due_date')} ${fd(s.lastBill.due_date)}</div>`); }).join(''):`<div class="empty">${t('nothing')}</div>`}</div>
+     <div class="card"><h2>${t('limit_alerts')} (${lim.length})</h2>${lim.length?lim.map(c=>{ const s=st.get(c.id); return custRow(c,`<div class="b num ${s.overLimit?'red':''}">${money0(s.total)} / ${money0(s.limit)}</div><span class="chip ${s.overLimit?'bad':'warn'}">${s.overLimit?t('over_limit'):t('near_limit')} ${Math.round(s.usePct*100)}%</span>`); }).join(''):`<div class="empty">${t('nothing')}</div>`}</div>
+    </div>
+   </div>
+   <div class="card"><h2>${t('recent')}</h2>${recent.map(x=>txLine(x)).join('')||`<div class="empty">${t('nothing')}</div>`}</div>`,
+   mount(root){ bindRates(root); const g=$('#genAll',root); if(g) g.onclick=act(async()=>{ await generateAllDue(); }); }};
+};
+async function generateAllDue(){
+  let n=0;
+  for(const c of S.data.customers){
+    for(let k=0;k<24;k++){ const s=computeStats().get(c.id); if(!s.billDue) break;
+      const cb=computeBill(c,s.period.from,s.period.to,S.data.transactions,s.lastBill); await saveBill(c,cb); n++;
+      await reload('transactions','bills'); } }
+  toast(`✓ ${t('bills')}: ${n}`); render();
+}
+
+/* ---------- credit slip ---------- */
+V.slip=(arg)=>{
+  const prods=S.data.products.filter(p=>p.active!==false);
+  return {html:`<h1>${t('new_slip_t')}</h1><div class="card"><div class="form">
+   <div class="full"><label>${t('customer')} *</label>${comboHTML('sc',t('search'))}</div>
+   <div class="full" id="cinfo"></div>
+   <div><label>${t('vehicle_no')}</label><select id="sv"><option value="">${t('select')}</option></select><input id="svo" placeholder="PB 29 AB 1234" style="margin-top:6px;display:none;text-transform:uppercase"></div>
+   <div><label>${t('product')} *</label><select id="sp"><option value="diesel">${t('diesel')}</option><option value="petrol">${t('petrol')}</option>${prods.map(p=>`<option value="lube:${p.id}">${esc(p.name)} (${money(p.price)})</option>`).join('')}</select></div>
+   <div><label>${t('date')}</label><input type="date" id="sd" value="${today()}" max="${today()}"></div>
+   <div class="full"><div class="seg" id="smode"><button type="button" data-m="qty" class="on">${t('by_litres')}</button><button type="button" data-m="amt">${t('by_amount')}</button></div></div>
+   <div><label id="sql">${t('litres')}</label><input id="sq" type="number" step="0.01" min="0" inputmode="decimal"></div>
+   <div><label>${t('amount')} (₹)</label><input id="sa" type="number" step="0.01" min="0" inputmode="decimal" readonly></div>
+   <div><label>${t('rate')} (₹)</label><input id="sr" type="number" step="0.01" inputmode="decimal" ${isOwner()?'':'readonly title="'+esc(t('edit_rate_owner'))+'"'}></div>
+   <div><label>${t('slip_no')}</label><input id="ssn" inputmode="numeric"></div>
+   <div><label>${t('driver')}</label><input id="sdr"></div>
+   <div><label>${t('odometer')}</label><input id="sod" type="number" inputmode="numeric"></div>
+   <div><label>${t('po_no')}</label><input id="spo"></div>
+   <div class="full"><label>${t('note')}</label><input id="sn"></div>
+   <div class="full" id="swarn"></div>
+   <div class="full total-box"><span>${t('total')}</span><span id="stot" class="num">₹0.00</span></div>
+   <div class="full"><button class="btn p big" id="ssave">✓ ${t('save')}</button></div>
+  </div></div>`,
+  mount(root){
+    let st=computeStats(), cust=null, mode='qty';
+    const sv=$('#sv',root), svo=$('#svo',root), sp=$('#sp',root), sd=$('#sd',root), sq=$('#sq',root), sa=$('#sa',root), sr=$('#sr',root);
+    const isLube=()=>sp.value.startsWith('lube:');
+    const fillVeh=()=>{ const vs=cust?S.data.vehicles.filter(v=>v.customer_id===cust.id&&v.active!==false):[];
+      sv.innerHTML=`<option value="">${t('select')}</option>`+vs.map(v=>`<option value="${v.id}">${esc(v.number)} · ${t('v_'+(v.vtype||'other'))}</option>`).join('')+`<option value="__o">${t('other_veh')}</option>`;
+      if(vs.length===1){ sv.value=vs[0].id; onVeh(); } else svo.style.display='none'; };
+    const info=()=>{ const el=$('#cinfo',root); if(!cust){ el.innerHTML=''; return; } const s=st.get(cust.id);
+      el.innerHTML=`<div class="row small"><span class="chip">${t('outstanding')}: <b class="num">${money(s.approved)}</b></span>${s.pending?`<span class="chip pending">${t('pending')}: ${money(s.pending)}</span>`:''}${s.limit?`<span class="chip ${s.overLimit?'bad':s.nearLimit?'warn':'ok'}">${t('available')}: ${money(s.limit-s.total)}</span>`:''}</div>`; };
+    const setRate=()=>{ if(isLube()){ const p=S.data.products.find(p=>'lube:'+p.id===sp.value); sr.value=p?p.price:''; } else { const r=rateOn(sd.value); sr.value=r&&r[sp.value]?r[sp.value]:''; }
+      $('#sql',root).textContent=isLube()?t('qty'):t('litres'); if(isLube()) setMode('qty'); $('#smode',root).style.display=isLube()?'none':''; calc(); };
+    const setMode=m=>{ mode=m; $$('#smode button',root).forEach(b=>b.classList.toggle('on',b.dataset.m===m)); sq.readOnly=m!=='qty'; sa.readOnly=m!=='amt'; };
+    const calc=()=>{ const rate=num(sr.value); let a=0;
+      if(mode==='qty'){ const q=num(sq.value); a=r2(q*rate); sa.value=q&&rate?a.toFixed(2):''; }
+      else { a=num(sa.value); sq.value=a&&rate?(Math.round(a/rate*100)/100):''; }
+      $('#stot',root).textContent=money(a); warn(a); return a; };
+    const warn=a=>{ const w=[]; if(!isLube()&&!num(sr.value)) w.push(`<div class="alert bad">${t('no_rate')}</div>`);
+      if(cust){ const s=st.get(cust.id); if(s.limit>0&&s.total+a>s.limit) w.push(`<div class="alert bad">${t('warn_over',{a:money(s.total+a),b:money(s.limit)})}</div>`);
+        if(s.overdue) w.push(`<div class="alert warn">${t('warn_overdue',{a:money(s.overdueAmt),d:fd(s.lastBill.due_date)})}</div>`); }
+      $('#swarn',root).innerHTML=w.join(''); };
+    const onVeh=()=>{ svo.style.display=sv.value==='__o'?'':'none'; const v=vehById(sv.value); if(v&&v.fuel&&!isLube()){ sp.value=v.fuel; setRate(); } };
+    const combo=mountCombo(root,'sc',custItems(),id=>{ cust=custById(id)||null; fillVeh(); info(); calc(); },arg);
+    sv.onchange=onVeh; sp.onchange=setRate; sd.onchange=setRate;
+    $$('#smode button',root).forEach(b=>b.onclick=()=>{ setMode(b.dataset.m); calc(); });
+    sq.oninput=calc; sa.oninput=calc; sr.oninput=calc;
+    setMode('qty'); setRate();
+    $('#ssave',root).onclick=act(async()=>{
+      if(!cust) throw new Error(t('err_cust'));
+      const a=calc(), rate=num(sr.value), q=num(sq.value);
+      if(!rate) throw new Error(t('no_rate'));
+      if(a<=0||q<=0) throw new Error(t('err_amt'));
+      const v=vehById(sv.value), lube=isLube(), p=lube?S.data.products.find(p=>'lube:'+p.id===sp.value):null;
+      const s=st.get(cust.id), over=s.limit>0&&s.total+a>s.limit;
+      const row={kind:'slip',customer_id:cust.id,date:sd.value||today(),vehicle_id:v?v.id:null,vehicle_no:v?v.number:(sv.value==='__o'?svo.value.trim().toUpperCase():''),
+        product:lube?'lube':sp.value,product_id:p?p.id:null,product_name:p?p.name:null,qty:q,rate,gst_rate:lube?num(p.gst_rate):0,amount:r2(a),
+        slip_no:$('#ssn',root).value.trim(),driver:$('#sdr',root).value.trim(),odometer:$('#sod',root).value?num($('#sod',root).value):null,po_no:$('#spo',root).value.trim(),note:$('#sn',root).value.trim(),flags:over?'over_limit':''};
+      await B.insert('transactions',row); await reload('transactions');
+      toast(isOwner()?t('saved'):t('saved_pending'));
+      st=computeStats(); ['sq','sa','ssn','sdr','sod','sn'].forEach(i=>$('#'+i,root).value=''); fillVeh(); info(); calc();
+      $('#sq',root).focus();
+    });
+  }};
+};
+
+/* ---------- payment ---------- */
+V.payment=(arg)=>({html:`<h1>${t('payment_t')}</h1><div class="card"><div class="form">
+  <div class="full"><label>${t('customer')} *</label>${comboHTML('pc',t('search'))}</div>
+  <div class="full" id="pinfo"></div>
+  <div><label>${t('amount')} (₹) *</label><input id="pa" type="number" step="0.01" min="0" inputmode="decimal"></div>
+  <div><label>${t('date')}</label><input type="date" id="pd" value="${today()}" max="${today()}"></div>
+  <div class="full"><label>${t('mode')}</label><div class="seg" id="pm">${['cash','upi','cheque','bank'].map((m,i)=>`<button type="button" data-m="${m}" class="${i===0?'on':''}">${t(m)}</button>`).join('')}</div></div>
+  <div><label>${t('ref_no')}</label><input id="pr"></div>
+  <div><label>${t('note')}</label><input id="pn"></div>
+  <div class="full"><button class="btn p big" id="psave">✓ ${t('save')}</button></div></div></div>`,
+  mount(root){
+    let st=computeStats(), cust=null, mode='cash';
+    const info=()=>{ const el=$('#pinfo',root); if(!cust){ el.innerHTML=''; return; } const s=st.get(cust.id);
+      el.innerHTML=`<div class="row small"><span class="chip">${t('outstanding')}: <b class="num">${money(s.approved)}</b></span>${s.pending?`<span class="chip pending">${t('pending')}: ${money(s.pending)}</span>`:''}${s.overdue?`<span class="chip bad">${t('overdue')}: ${money(s.overdueAmt)}</span>`:''}</div>`; };
+    mountCombo(root,'pc',custItems(),id=>{ cust=custById(id)||null; info(); },arg);
+    $$('#pm button',root).forEach(b=>b.onclick=()=>{ mode=b.dataset.m; $$('#pm button',root).forEach(x=>x.classList.toggle('on',x===b)); });
+    $('#psave',root).onclick=act(async()=>{
+      if(!cust) throw new Error(t('err_cust')); const a=r2($('#pa',root).value); if(a<=0) throw new Error(t('err_amt'));
+      await B.insert('transactions',{kind:'payment',customer_id:cust.id,date:$('#pd',root).value||today(),amount:a,mode,ref_no:$('#pr',root).value.trim(),note:$('#pn',root).value.trim()});
+      await reload('transactions'); st=computeStats(); toast(isOwner()?t('saved'):t('saved_pending'));
+      ['pa','pr','pn'].forEach(i=>$('#'+i,root).value=''); info();
+    });
+  }});
+
+/* ---------- approvals / my entries ---------- */
+V.approvals=()=>{
+  const T=S.data.transactions;
+  if(!isOwner()){
+    const mine=T.filter(x=>x.created_by===S.profile.id).sort((a,b)=>b.created_at<a.created_at?-1:1).slice(0,200);
+    return {html:`<h1>${t('my_entries')}</h1><div class="card">${mine.map(x=>txLine(x)).join('')||`<div class="empty">${t('nothing')}</div>`}</div>`};
+  }
+  const st=computeStats(), tab=S.apTab;
+  const list=tab==='pending'?T.filter(x=>x.status==='pending').sort(byDate):T.filter(x=>x.status!=='pending').sort((a,b)=>(b.approved_at||b.created_at)<(a.approved_at||a.created_at)?-1:1).slice(0,300);
+  const flags=x=>{ const f=[]; if(x.flags==='over_limit'||(st.get(x.customer_id)||{}).overLimit&&x.kind==='slip') f.push(`<span class="chip bad">${t('over_limit_flag')}</span>`);
+    if(x.kind==='slip'&&x.product!=='lube'){ const r=rateOn(x.date); if(r&&num(r[x.product])!==num(x.rate)) f.push(`<span class="chip warn">${t('rate_diff')} (${money(r[x.product])})</span>`); } return f.join(' '); };
+  return {html:`<h1>${t('approvals')}</h1>
+   <div class="tabs"><a data-tab="pending" class="${tab==='pending'?'on':''}">${t('pend_tab')} (${T.filter(x=>x.status==='pending').length})</a><a data-tab="history" class="${tab==='history'?'on':''}">${t('history')}</a></div>
+   ${tab==='pending'&&list.length?`<div class="row" style="margin-bottom:10px"><label class="row" style="margin:0;color:var(--ink)"><input type="checkbox" id="apAll"> ${t('select_all')}</label><span class="sp"></span><button class="btn ok" id="apBulk">✓ ${t('approve_sel')}</button></div>`:''}
+   <div class="card">${list.length?list.map(x=>{ const c=custById(x.customer_id);
+     return `<div class="item">${tab==='pending'?`<input type="checkbox" class="apck" value="${x.id}" style="margin-top:3px">`:''}<div class="main">
+      <div class="row"><b>${esc(c?c.name:'?')}</b><span class="b num" style="margin-left:auto">${DEBIT.has(x.kind)?'':'− '}${money(x.amount)}</span></div>
+      <div class="small">${fd(x.date)} · <b>${t('k_'+x.kind)}</b> · ${esc(describeTx(x))}${x.vehicle_no?' · 🚚 '+esc(x.vehicle_no):''}${x.slip_no?' · #'+esc(x.slip_no):''}${x.po_no?' · PO '+esc(x.po_no):''}</div>
+      <div class="small muted">${t('created_by')}: ${esc(profName(x.created_by))}${x.driver?' · '+esc(x.driver):''}${x.note?' · '+esc(x.note):''}${x.approved_by&&tab!=='pending'?` · ${t('approved_by')}: ${esc(profName(x.approved_by))}`:''}</div>
+      <div class="row" style="margin-top:6px">${flags(x)}${x.reject_reason?`<span class="small red">${esc(x.reject_reason)}</span>`:''}<span class="sp"></span>
+      ${tab==='pending'?`<button class="btn sm d" data-rej="${x.id}">✕ ${t('reject')}</button><button class="btn sm ok" data-ap="${x.id}">✓ ${t('approve')}</button>`:chip(x.status)}</div></div></div>`; }).join(''):`<div class="empty">${t('nothing')}</div>`}</div>`,
+   mount(root){
+     $$('[data-tab]',root).forEach(a=>a.onclick=()=>{ S.apTab=a.dataset.tab; render(); });
+     const all=$('#apAll',root); if(all) all.onchange=()=>$$('.apck',root).forEach(c=>c.checked=all.checked);
+     const bulk=$('#apBulk',root); if(bulk) bulk.onclick=act(async()=>{ const ids=$$('.apck:checked',root).map(c=>c.value); if(!ids.length) return;
+       await B.updateMany('transactions',ids,{status:'approved',approved_by:S.profile.id,approved_at:new Date().toISOString()}); await reload('transactions'); toast(t('bulk_done',{n:ids.length})); render(); });
+     $$('[data-ap]',root).forEach(b=>b.onclick=act(async()=>{ await B.update('transactions',b.dataset.ap,{status:'approved',approved_by:S.profile.id,approved_at:new Date().toISOString()}); await reload('transactions'); toast(t('approved')); render(); }));
+     $$('[data-rej]',root).forEach(b=>b.onclick=()=>openModal(t('reject'),`<label>${t('reason')}</label><input id="rr" placeholder="e.g. duplicate slip, wrong vehicle"><div class="row" style="margin-top:14px"><span class="sp"></span><button class="btn" data-close>${t('cancel')}</button><button class="btn d" id="rok">${t('reject')}</button></div>`,box=>{
+       $('#rok',box).onclick=act(async()=>{ await B.update('transactions',b.dataset.rej,{status:'rejected',reject_reason:$('#rr',box).value.trim()||'—',approved_by:S.profile.id,approved_at:new Date().toISOString()}); await reload('transactions'); closeModal(); toast(t('rejected')); render(); }); }));
+   }};
+};
+
+/* ---------- customers ---------- */
+V.customers=()=>{
+  const st=computeStats(), q=S.custQ.toLowerCase(), ty=S.custType;
+  const vehMap={}; for(const v of S.data.vehicles) (vehMap[v.customer_id]=vehMap[v.customer_id]||[]).push(v.number.replace(/\s/g,'').toLowerCase());
+  const list=S.data.customers.filter(c=>(!ty||c.type===ty)&&(!q||(c.name+' '+(c.phone||'')).toLowerCase().includes(q)||(vehMap[c.id]||[]).some(n=>n.includes(q.replace(/\s/g,''))))).sort((a,b)=>st.get(b.id).total-st.get(a.id).total);
+  return {html:`<div class="row" style="margin-bottom:12px"><h1 style="margin:0">${t('customers')}</h1><span class="sp"></span>${isOwner()?`<button class="btn p" id="addC">＋ ${t('add_customer')}</button>`:''}</div>
+   <div class="row" style="margin-bottom:12px"><input id="cq" placeholder="🔍 ${esc(t('search'))}" value="${esc(S.custQ)}" style="flex:2;min-width:200px"><select id="ct" style="flex:1;min-width:150px"><option value="">${t('all')}</option>${['fleet','farmer','business','individual'].map(k=>`<option value="${k}" ${ty===k?'selected':''}>${t('t_'+k)}</option>`).join('')}</select></div>
+   <div class="tw"><table><thead><tr><th>${t('customer')}</th><th>${t('type')}</th><th class="n">${t('outstanding')}</th><th class="n">${t('pending')}</th><th class="n">${t('limit')}</th><th>${t('status')}</th></tr></thead><tbody>
+   ${list.map(c=>{ const s=st.get(c.id); return `<tr class="click" data-c="${c.id}"><td><b>${esc(c.name)}</b><div class="small muted">${esc(c.phone||'')}</div></td><td class="small">${typeLabel(c.type)}</td><td class="n b">${money(s.approved)}</td><td class="n">${s.pending?money(s.pending):'—'}</td><td class="n">${s.limit?money0(s.limit):'—'}</td>
+     <td>${c.active===false?`<span class="chip">${t('inactive')}</span> `:''}${s.overdue?`<span class="chip bad">${t('overdue')}</span> `:''}${s.overLimit?`<span class="chip bad">${t('over_limit')}</span>`:s.nearLimit?`<span class="chip warn">${t('near_limit')}</span>`:''}</td></tr>`; }).join('')||`<tr><td colspan="6" class="empty">${t('nothing')}</td></tr>`}
+   </tbody></table></div>`,
+   mount(root){
+     const cq=$('#cq',root); cq.oninput=()=>{ S.custQ=cq.value; const pos=cq.selectionStart; render(); const n=$('#cq'); n.focus(); n.setSelectionRange(pos,pos); };
+     $('#ct',root).onchange=e=>{ S.custType=e.target.value; render(); };
+     $$('[data-c]',root).forEach(r=>r.onclick=()=>go('#/customer/'+r.dataset.c));
+     const a=$('#addC',root); if(a) a.onclick=()=>customerForm(null);
+   }};
+};
+function customerForm(c){
+  const x=c||{type:'fleet',cycle:'monthly',cycle_days:30,due_days:7,interest_rate:0,credit_limit:0,msg_lang:'hi',active:true};
+  const opt=(arr,v,pre)=>arr.map(k=>`<option value="${k}" ${v===k?'selected':''}>${t(pre+k)}</option>`).join('');
+  openModal(c?t('edit_customer'):t('add_customer'),`<div class="form">
+   <div class="full"><label>${t('name')} *</label><input id="fn" value="${esc(x.name||'')}"></div>
+   <div><label>${t('ctype')}</label><select id="ft">${opt(['fleet','farmer','business','individual'],x.type,'t_')}</select></div>
+   <div><label>${t('phone')}</label><input id="fp" type="tel" inputmode="tel" value="${esc(x.phone||'')}"></div>
+   <div><label>${t('gstin')}</label><input id="fg" value="${esc(x.gstin||'')}" style="text-transform:uppercase"></div>
+   <div><label>${t('credit_limit')}</label><input id="fl" type="number" inputmode="numeric" value="${num(x.credit_limit)}"></div>
+   <div class="full"><label>${t('address')}</label><input id="fa" value="${esc(x.address||'')}"></div>
+   <div><label>${t('cycle')}</label><select id="fc">${opt(['weekly','fortnightly','monthly','seasonal','custom'],x.cycle,'c_')}</select></div>
+   <div id="fcdw"><label>${t('cycle_days')}</label><input id="fcd" type="number" inputmode="numeric" value="${num(x.cycle_days)||30}"></div>
+   <div><label>${t('due_days')}</label><input id="fd" type="number" inputmode="numeric" value="${num(x.due_days)}"></div>
+   <div><label>${t('interest')}</label><input id="fi" type="number" step="0.01" inputmode="decimal" value="${num(x.interest_rate)}"></div>
+   <div><label>${t('msg_lang')}</label><select id="fm"><option value="hi" ${x.msg_lang==='hi'?'selected':''}>हिन्दी</option><option value="pa" ${x.msg_lang==='pa'?'selected':''}>ਪੰਜਾਬੀ</option><option value="en" ${x.msg_lang==='en'?'selected':''}>English</option></select></div>
+   <div><label>${t('status')}</label><select id="fs"><option value="1" ${x.active!==false?'selected':''}>${t('active')}</option><option value="0" ${x.active===false?'selected':''}>${t('inactive')}</option></select></div>
+   <div class="full"><label>${t('cust_note')}</label><input id="fno" value="${esc(x.note||'')}"></div>
+  </div><div class="row" style="margin-top:16px"><span class="sp"></span><button class="btn" data-close>${t('cancel')}</button><button class="btn p" id="fsave">${t('save')}</button></div>`,box=>{
+    const tog=()=>$('#fcdw',box).style.display=$('#fc',box).value==='custom'?'':'none'; $('#fc',box).onchange=tog; tog();
+    $('#fsave',box).onclick=act(async()=>{
+      const row={name:$('#fn',box).value.trim(),type:$('#ft',box).value,phone:$('#fp',box).value.trim(),gstin:$('#fg',box).value.trim().toUpperCase(),credit_limit:num($('#fl',box).value),address:$('#fa',box).value.trim(),
+        cycle:$('#fc',box).value,cycle_days:Math.max(1,Math.round(num($('#fcd',box).value))||30),due_days:Math.max(0,Math.round(num($('#fd',box).value))),interest_rate:num($('#fi',box).value),msg_lang:$('#fm',box).value,active:$('#fs',box).value==='1',note:$('#fno',box).value.trim()};
+      if(!row.name) throw new Error(t('err_req'));
+      const saved=c?await B.update('customers',c.id,row):await B.insert('customers',row);
+      await reload('customers'); closeModal(); toast(t('saved')); go('#/customer/'+saved.id);
+    });
+  });
+}
+function vehicleForm(cid){
+  openModal(t('add_vehicle'),`<div class="form"><div><label>${t('vehicle_no')} *</label><input id="vn" placeholder="PB 29 AB 1234" style="text-transform:uppercase"></div>
+   <div><label>${t('vtype')}</label><select id="vt">${['truck','tractor','car','pickup','bike','bus','machine','genset','other'].map(k=>`<option value="${k}">${t('v_'+k)}</option>`).join('')}</select></div>
+   <div><label>${t('fuel')}</label><select id="vf"><option value="diesel">${t('diesel')}</option><option value="petrol">${t('petrol')}</option></select></div></div>
+   <div class="row" style="margin-top:16px"><span class="sp"></span><button class="btn" data-close>${t('cancel')}</button><button class="btn p" id="vsave">${t('save')}</button></div>`,box=>{
+    $('#vsave',box).onclick=act(async()=>{ const n=$('#vn',box).value.trim().toUpperCase(); if(!n) throw new Error(t('err_req'));
+      await B.insert('vehicles',{customer_id:cid,number:n,vtype:$('#vt',box).value,fuel:$('#vf',box).value,active:true}); await reload('vehicles'); closeModal(); toast(t('saved')); render(); });
+  });
+}
+function adjustForm(cid){
+  openModal(t('adjust'),`<div class="form"><div class="full"><label>${t('type')}</label><select id="ak"><option value="credit_note">${t('k_credit_note')}</option><option value="debit_note">${t('k_debit_note')}</option></select></div>
+   <div><label>${t('amount')} (₹) *</label><input id="aa" type="number" step="0.01" inputmode="decimal"></div><div><label>${t('date')}</label><input id="ad" type="date" value="${today()}"></div>
+   <div class="full"><label>${t('note')} *</label><input id="an"></div></div>
+   <div class="row" style="margin-top:16px"><span class="sp"></span><button class="btn" data-close>${t('cancel')}</button><button class="btn p" id="asave">${t('save')}</button></div>`,box=>{
+    $('#asave',box).onclick=act(async()=>{ const a=r2($('#aa',box).value), n=$('#an',box).value.trim(); if(a<=0||!n) throw new Error(t('err_req'));
+      await B.insert('transactions',{kind:$('#ak',box).value,customer_id:cid,date:$('#ad',box).value||today(),amount:a,note:n}); await reload('transactions'); closeModal(); toast(t('saved')); render(); });
+  });
+}
+function billPreview(c,toDate){
+  const st=computeStats().get(c.id); const lb=st.lastBill;
+  const from=st.period.from||(lb?addDays(lb.period_to,1):today());
+  const to=toDate||st.period.to||today();
+  const cb=computeBill(c,from,to,S.data.transactions,lb);
+  if(!cb.items.length&&!cb.interest){ toast(t('no_items')); return; }
+  openModal(t('generate_bill')+' — '+c.name,`<div class="form"><div><label>${t('from')}</label><input value="${fd(cb.from)}" readonly></div><div><label>${t('to')}</label><input type="date" id="bto" value="${to}" max="${today()}"></div></div>
+   ${cb.pendingCount?`<div class="alert warn">${t('pend_note',{n:cb.pendingCount})}</div>`:''}
+   <table class="sumtbl" style="margin-top:12px"><tr><td>${t('opening')}</td><td class="n">${money(cb.opening)}</td></tr><tr><td>${t('debit')} (${cb.items.filter(x=>DEBIT.has(x.kind)).length})</td><td class="n">${money(cb.debits)}</td></tr>
+   ${cb.interest?`<tr><td>${t('interest_s')}<div class="small muted">${esc(cb.interestNote)}</div></td><td class="n">${money(cb.interest)}</td></tr>`:''}
+   <tr><td>${t('credit')} (${cb.items.filter(x=>!DEBIT.has(x.kind)).length})</td><td class="n">− ${money(cb.credits)}</td></tr><tr class="tot"><td class="b">${t('closing')}</td><td class="n b">${money(cb.closing)}</td></tr><tr><td>${t('due_date')}</td><td class="n">${fd(cb.due_date)}</td></tr></table>
+   <div class="row" style="margin-top:16px"><span class="sp"></span><button class="btn" data-close>${t('cancel')}</button><button class="btn p" id="bok">✓ ${t('generate_bill')}</button></div>`,box=>{
+    $('#bto',box).onchange=e=>{ closeModal(); billPreview(c,e.target.value); };
+    $('#bok',box).onclick=act(async()=>{ const bill=await saveBill(c,cb); await reload('transactions','bills'); closeModal(); toast(t('saved')); go('#/bill/'+bill.id); });
+  });
+}
+V.customer=(id)=>{
+  const c=custById(id); if(!c) return {html:`<div class="empty">${t('nothing')}</div>`};
+  const s=computeStats().get(c.id);
+  const vs=S.data.vehicles.filter(v=>v.customer_id===c.id);
+  const lf=S.ledgerFrom&&S.ledgerFrom[c.id]||addDays(today(),-60).slice(0,8)+'01';
+  const all=S.data.transactions.filter(x=>x.customer_id===c.id&&x.status==='approved').sort(byDate);
+  let bal=r2(all.filter(x=>x.date<lf).reduce((a,x)=>a+num(x.amount)*sgn(x),0)); const open=bal;
+  const rows=all.filter(x=>x.date>=lf).map(x=>{ bal=r2(bal+num(x.amount)*sgn(x)); return {x,bal}; });
+  const pend=S.data.transactions.filter(x=>x.customer_id===c.id&&x.status==='pending').sort(byDate);
+  const bills=S.data.bills.filter(b=>b.customer_id===c.id).sort((a,b)=>num(b.bill_no)-num(a.bill_no));
+  const bn=id=>{ const b=S.data.bills.find(b=>b.id===id); return b?b.bill_no:''; };
+  const O=isOwner();
+  return {html:`<div class="row noprint" style="margin-bottom:8px"><a href="#/customers" class="small">← ${t('customers')}</a></div>
+   <div class="card"><div class="row"><div><h1 style="margin:0">${esc(c.name)}</h1><div class="small muted">${typeLabel(c.type)}${c.phone?' · 📞 '+esc(c.phone):''}${c.gstin?' · GSTIN '+esc(c.gstin):''}${c.address?' · '+esc(c.address):''}</div>
+     <div class="small muted">${t('cycle')}: ${t('c_'+c.cycle)}${c.cycle==='custom'?' ('+c.cycle_days+' '+t('days')+')':''} · ${t('due_days')}: ${c.due_days} · ${t('interest_s')}: ${num(c.interest_rate)}%${c.note?' · '+esc(c.note):''}</div></div>
+     <span class="sp"></span>${O?`<button class="btn sm" id="ec">✎ ${t('edit')}</button>`:''}</div>
+    <div class="grid g4" style="margin-top:12px">
+     <div class="kpi"><div class="l">${t('approved_bal')}</div><div class="v ${s.approved<0?'green':''}">${money(s.approved)}</div></div>
+     <div class="kpi"><div class="l">${t('pending_bal')}</div><div class="v">${money(s.pending)}</div></div>
+     <div class="kpi"><div class="l">${t('limit')}</div><div class="v">${s.limit?money0(s.limit):'—'}</div>${s.limit?`<div class="s ${s.overLimit?'red b':''}">${t('available')}: ${money0(s.limit-s.total)}</div>`:''}</div>
+     <div class="kpi"><div class="l">${t('last_bill')}</div><div class="v">${s.lastBill?'#'+s.lastBill.bill_no:'—'}</div><div class="s">${s.lastBill?(s.overdue?`<span class="red b">${t('overdue')} ${money0(s.overdueAmt)}</span>`:s.overdueAmt>0.5?`${t('due')} ${fd(s.lastBill.due_date)}`:t('paid')):t('no_bill_yet')}</div></div>
+    </div>
+    <div class="row" style="margin-top:14px"><a class="btn p" href="#/slip/${c.id}">⛽ ${t('new_slip')}</a><a class="btn" href="#/payment/${c.id}">💰 ${t('payment')}</a>
+     ${O?`<button class="btn" id="gb">🧾 ${t('generate_bill')}</button><button class="btn" id="adj">± ${t('adjust')}</button><button class="btn wa" id="rem">💬 ${t('reminder')}</button>`:''}</div>
+   </div>
+   <div class="card"><div class="row" style="margin-bottom:6px"><h2 style="margin:0">${t('vehicles')} (${vs.length})</h2><span class="sp"></span>${O?`<button class="btn sm" id="av">＋ ${t('add_vehicle')}</button>`:''}</div>
+    <div class="row">${vs.map(v=>`<span class="chip" style="font-size:13px;padding:5px 10px">${esc(v.number)} · ${t('v_'+(v.vtype||'other'))} · ${t(v.fuel)}</span>`).join('')||`<span class="muted small">${t('nothing')}</span>`}</div></div>
+   ${pend.length?`<div class="card"><h2>${t('pending')} (${pend.length})</h2>${pend.map(x=>txLine(x,false)).join('')}</div>`:''}
+   <div class="card"><div class="row" style="margin-bottom:10px"><h2 style="margin:0">${t('ledger')}</h2><span class="sp"></span><label style="margin:0">${t('ledger_from')}</label><input type="date" id="lf" value="${lf}" style="width:auto"><button class="btn sm" id="lcsv">⬇ CSV</button></div>
+    <div class="tw"><table><thead><tr><th>${t('date')}</th><th>${t('particulars')}</th><th>${t('vehicle')}</th><th class="n">${t('debit')}</th><th class="n">${t('credit')}</th><th class="n">${t('balance')}</th><th>${t('bill_no')}</th></tr></thead><tbody>
+    <tr><td>${fd(lf)}</td><td class="b">${t('opening')}</td><td></td><td></td><td></td><td class="n b">${money(open)}</td><td></td></tr>
+    ${rows.map(({x,bal})=>`<tr><td>${fd(x.date)}</td><td>${esc(describeTx(x))}${x.slip_no?` <span class="muted small">#${esc(x.slip_no)}</span>`:''}${x.po_no?` <span class="muted small">PO ${esc(x.po_no)}</span>`:''}</td><td class="small">${esc(x.vehicle_no||'')}</td><td class="n">${DEBIT.has(x.kind)?money(x.amount):''}</td><td class="n green">${DEBIT.has(x.kind)?'':money(x.amount)}</td><td class="n b">${money(bal)}</td><td class="small">${x.bill_id?'#'+bn(x.bill_id):''}</td></tr>`).join('')}
+    </tbody></table></div></div>
+   ${O?`<div class="card"><h2>${t('bills')} (${bills.length})</h2>${bills.length?`<div class="tw"><table><thead><tr><th>${t('bill_no')}</th><th>${t('period')}</th><th class="n">${t('closing')}</th><th>${t('due_date')}</th></tr></thead><tbody>${bills.map(b=>`<tr class="click" data-b="${b.id}"><td>#${b.bill_no}</td><td>${fd(b.period_from)} → ${fd(b.period_to)}</td><td class="n b">${money(b.closing)}</td><td>${fd(b.due_date)}</td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">${t('no_bill_yet')}</div>`}</div>`:''}`,
+   mount(root){
+     $('#lf',root).onchange=e=>{ S.ledgerFrom=S.ledgerFrom||{}; S.ledgerFrom[c.id]=e.target.value; render(); };
+     $('#lcsv',root).onclick=()=>downloadFile(`ledger-${c.name.replace(/\W+/g,'_')}.csv`,toCSV(['Date','Type','Particulars','Vehicle','Slip no','PO','Debit','Credit','Balance','Bill'],[[lf,'','Opening balance','','','','','',open,''],...rows.map(({x,bal})=>[x.date,x.kind,describeTx(x),x.vehicle_no||'',x.slip_no||'',x.po_no||'',DEBIT.has(x.kind)?x.amount:'',DEBIT.has(x.kind)?'':x.amount,bal,x.bill_id?bn(x.bill_id):''])]),'text/csv');
+     if(!O) return;
+     $('#ec',root).onclick=()=>customerForm(c);
+     $('#av',root).onclick=()=>vehicleForm(c.id);
+     $('#adj',root).onclick=()=>adjustForm(c.id);
+     $('#gb',root).onclick=()=>billPreview(c, s.billDue?s.period.to:today());
+     $('#rem',root).onclick=()=>openWA(c,reminderText(c,s));
+     $$('[data-b]',root).forEach(r=>r.onclick=()=>go('#/bill/'+r.dataset.b));
+   }};
+};
+
+/* ---------- bills ---------- */
+V.bills=()=>{
+  const st=computeStats(), due=S.data.customers.filter(c=>st.get(c.id).billDue);
+  const bills=[...S.data.bills].sort((a,b)=>num(b.bill_no)-num(a.bill_no));
+  const status=b=>{ const s=st.get(b.customer_id); if(!s||!s.lastBill||s.lastBill.id!==b.id) return '<span class="chip">—</span>'; return s.overdueAmt<=0.5?`<span class="chip ok">${t('paid')}</span>`:s.overdue?`<span class="chip bad">${t('overdue')}</span>`:`<span class="chip warn">${t('due')}</span>`; };
+  return {html:`<h1>${t('bills')}</h1>
+   <div class="card"><div class="row" style="margin-bottom:6px"><h2 style="margin:0">${t('bills_due')} (${due.length})</h2><span class="sp"></span>${due.length?`<button class="btn p sm" id="genAll">${t('generate_all')}</button>`:''}</div>
+   ${due.length?due.map(c=>{ const p=st.get(c.id).period; return `<div class="item"><div class="main"><b>${esc(c.name)}</b><div class="small muted">${t('c_'+c.cycle)} · ${fd(p.from)} → ${fd(p.to)}</div></div><button class="btn sm" data-gen="${c.id}">${t('generate_bill')}</button></div>`; }).join(''):`<div class="empty">${t('nothing')}</div>`}
+   <div class="small muted" style="margin-top:8px">${t('c_seasonal')}: ${t('customer')} → ${t('generate_bill')}</div></div>
+   <div class="tw"><table><thead><tr><th>${t('bill_no')}</th><th>${t('customer')}</th><th>${t('period')}</th><th class="n">${t('closing')}</th><th>${t('due_date')}</th><th>${t('status')}</th></tr></thead><tbody>
+   ${bills.map(b=>{ const c=custById(b.customer_id); return `<tr class="click" data-b="${b.id}"><td>#${b.bill_no}</td><td><b>${esc(c?c.name:'?')}</b></td><td class="small">${fd(b.period_from)} → ${fd(b.period_to)}</td><td class="n b">${money(b.closing)}</td><td>${fd(b.due_date)}</td><td>${status(b)}</td></tr>`; }).join('')||`<tr><td colspan="6" class="empty">${t('nothing')}</td></tr>`}
+   </tbody></table></div>`,
+   mount(root){ const g=$('#genAll',root); if(g) g.onclick=act(generateAllDue);
+     $$('[data-gen]',root).forEach(b=>b.onclick=()=>{ const c=custById(b.dataset.gen); billPreview(c,st.get(c.id).period.to); });
+     $$('[data-b]',root).forEach(r=>r.onclick=()=>go('#/bill/'+r.dataset.b)); }};
+};
+V.bill=(id)=>{
+  const b=S.data.bills.find(x=>x.id===id); if(!b) return {html:`<div class="empty">${t('nothing')}</div>`};
+  const c=custById(b.customer_id)||{name:'?'}, st=settings();
+  const items=S.data.transactions.filter(x=>x.bill_id===b.id).sort(byDate);
+  const lubes=items.filter(x=>x.kind==='slip'&&x.product==='lube');
+  const gstRows={}; for(const x of lubes){ const g=num(x.gst_rate); const tx=r2(num(x.amount)/(1+g/100)); const k=g+'%'; gstRows[k]=gstRows[k]||{taxable:0,gst:0}; gstRows[k].taxable+=tx; gstRows[k].gst+=r2(num(x.amount)-tx); }
+  const fuelL=p=>items.filter(x=>x.kind==='slip'&&x.product===p).reduce((a,x)=>a+num(x.qty),0);
+  return {html:`<div class="row noprint" style="margin-bottom:10px"><a href="#/bills" class="small">← ${t('bills')}</a><span class="sp"></span><a class="btn sm" href="#/customer/${c.id}">👤 ${esc(c.name)}</a><button class="btn sm wa" id="bwa">💬 ${t('whatsapp')}</button>${navigator.share?`<button class="btn sm" id="bsh">↗ ${t('share')}</button>`:''}<button class="btn sm p" id="bpr">🖨 ${t('print')}</button></div>
+  <div class="bill">
+   <div class="hd"><div><div class="pn">${esc(st.pump_name||'')}</div><div class="small">${esc(st.company||'')}</div><div class="small">${esc(st.address||'')}</div><div class="small">${st.phone?'📞 '+esc(st.phone):''}${st.gstin?' · GSTIN: '+esc(st.gstin):''}</div></div>
+    <div style="text-align:right"><div class="b" style="font-size:16px">${t('statement')}</div><div>${t('bill_no')} <b>#${b.bill_no}</b></div><div class="small">${t('date')}: ${fd((b.created_at||'').slice(0,10))}</div><div class="small">${t('period')}: ${fd(b.period_from)} → ${fd(b.period_to)}</div></div></div>
+   <div style="margin-bottom:12px"><div class="small muted">${t('bill_to')}</div><div class="b">${esc(c.name)}</div><div class="small">${esc([c.address,c.phone,c.gstin?'GSTIN: '+c.gstin:''].filter(Boolean).join(' · '))}</div></div>
+   <div class="tw"><table><thead><tr><th>${t('date')}</th><th>${t('particulars')}</th><th>${t('vehicle')}</th><th>${t('slip_no')}</th><th class="n">${t('qty')}</th><th class="n">${t('rate')}</th><th class="n">${t('debit')}</th><th class="n">${t('credit')}</th></tr></thead><tbody>
+    <tr><td></td><td class="b">${t('opening')}</td><td></td><td></td><td></td><td></td><td class="n b">${money(b.opening)}</td><td></td></tr>
+    ${items.map(x=>`<tr><td>${fd(x.date)}</td><td>${x.kind==='slip'?esc(prodLabel(x)):esc(describeTx(x))}${x.po_no?` <span class="small muted">PO ${esc(x.po_no)}</span>`:''}</td><td>${esc(x.vehicle_no||'')}</td><td>${esc(x.slip_no||'')}</td><td class="n">${x.kind==='slip'?ltr(x.qty):''}</td><td class="n">${x.kind==='slip'?num(x.rate).toFixed(2):''}</td><td class="n">${DEBIT.has(x.kind)?money(x.amount):''}</td><td class="n">${DEBIT.has(x.kind)?'':money(x.amount)}</td></tr>`).join('')}
+   </tbody></table></div>
+   <div class="row" style="align-items:flex-start;margin-top:14px;gap:20px">
+    <div style="flex:1;min-width:240px" class="small">
+     <div>${t('petrol')}: <b>${ltr(fuelL('petrol'))} L</b> · ${t('diesel')}: <b>${ltr(fuelL('diesel'))} L</b></div>
+     ${Object.keys(gstRows).length?`<div style="margin-top:8px"><b>${t('lube_l')} — GST</b>${Object.entries(gstRows).map(([k,v])=>`<div>${t('taxable')} ${money(v.taxable)} + ${t('gst')} ${k} ${money(v.gst)} (CGST ${money(v.gst/2)} + SGST ${money(v.gst/2)})</div>`).join('')}</div>`:''}
+     <div class="muted" style="margin-top:4px">Petrol / diesel are outside GST.</div>
+     <div style="margin-top:10px"><b>${t('in_words')}:</b> ${inWords(b.closing)}${b.closing<0?' ('+t('adv')+')':''}</div>
+    </div>
+    <table class="sumtbl" style="width:auto;min-width:260px"><tr><td>${t('opening')}</td><td class="n">${money(b.opening)}</td></tr><tr><td>+ ${t('debit')}</td><td class="n">${money(b.debits)}</td></tr>${num(b.interest)?`<tr><td>+ ${t('interest_s')}</td><td class="n">${money(b.interest)}</td></tr>`:''}<tr><td>− ${t('credit')}</td><td class="n">${money(b.credits)}</td></tr>
+     <tr><td colspan="2"><hr style="border:0;border-top:1px solid var(--ink);margin:4px 0"></td></tr><tr><td class="b" style="font-size:16px">${t('closing')}</td><td class="n b" style="font-size:16px">${money(b.closing)}</td></tr><tr><td>${t('due_date')}</td><td class="n b">${fd(b.due_date)}</td></tr></table>
+   </div>
+   <div class="row" style="margin-top:36px"><div class="small muted">${esc(st.bill_footer||'')}</div><span class="sp"></span><div style="text-align:center;min-width:180px;border-top:1px solid var(--ink);padding-top:4px" class="small">${t('signature')}<br>${esc(st.pump_name||'')}</div></div>
+  </div>`,
+  mount(root){ $('#bpr',root).onclick=()=>window.print(); $('#bwa',root).onclick=()=>openWA(c,billText(c,b));
+    const sh=$('#bsh',root); if(sh) sh.onclick=()=>navigator.share({title:`${t('bill_no')} ${b.bill_no}`,text:billText(c,b)}).catch(()=>{}); }};
+};
+
+/* ---------- reports ---------- */
+const REPORTS={
+  daily(f,to){ const g={}; for(const x of S.data.transactions){ if(x.kind!=='slip'||x.status!=='approved'||x.date<f||x.date>to) continue; const r=g[x.date]=g[x.date]||[x.date,0,0,0,0,0,0];
+      if(x.product==='petrol'){ r[1]+=num(x.qty); r[2]+=num(x.amount); } else if(x.product==='diesel'){ r[3]+=num(x.qty); r[4]+=num(x.amount); } else r[5]+=num(x.amount); r[6]+=num(x.amount); }
+    const rows=Object.values(g).sort((a,b)=>a[0]<b[0]?-1:1); const tot=['',0,0,0,0,0,0]; rows.forEach(r=>{ for(let i=1;i<7;i++) tot[i]+=r[i]; });
+    return {cols:[[t('date'),'d'],[t('petrol')+' L','l'],[t('petrol')+' ₹','m'],[t('diesel')+' L','l'],[t('diesel')+' ₹','m'],[t('lube_l')+' ₹','m'],[t('total')+' ₹','m']],rows,tot}; },
+  payments(f,to){ const rows=S.data.transactions.filter(x=>x.kind==='payment'&&x.status==='approved'&&x.date>=f&&x.date<=to).sort(byDate).map(x=>[x.date,(custById(x.customer_id)||{}).name||'?',t(x.mode||'cash'),x.ref_no||'',profName(x.created_by),num(x.amount)]);
+    const byMode={}; rows.forEach(r=>byMode[r[2]]=(byMode[r[2]]||0)+r[5]);
+    return {cols:[[t('date'),'d'],[t('customer')],[t('mode')],[t('ref_no')],[t('created_by')],[t('amount'),'m']],rows,tot:['','','','','',rows.reduce((a,r)=>a+r[5],0)],note:Object.entries(byMode).map(([k,v])=>`${k}: ${money(v)}`).join(' · ')}; },
+  ageing(f,to){ const rows=S.data.customers.map(c=>{ const a=ageing(c.id,to); return [c.name,typeLabel(c.type),c.phone||'',a.total,...a.b]; }).filter(r=>Math.abs(r[3])>0.5).sort((a,b)=>b[3]-a[3]);
+    const tot=['','','',0,0,0,0,0]; rows.forEach(r=>{ for(let i=3;i<8;i++) tot[i]+=r[i]; });
+    return {cols:[[t('customer')],[t('type')],[t('phone')],[t('outstanding'),'m'],['0–30','m'],['31–60','m'],['61–90','m'],['90+','m']],rows,tot,note:`${t('as_on')} ${fd(to)}`}; },
+  customer(f,to){ const rows=S.data.customers.map(c=>{ const tx=S.data.transactions.filter(x=>x.customer_id===c.id&&x.status==='approved'); const inR=tx.filter(x=>x.date>=f&&x.date<=to);
+      const sl=inR.filter(x=>x.kind==='slip'); const bal=tx.filter(x=>x.date<=to).reduce((a,x)=>a+num(x.amount)*sgn(x),0);
+      return [c.name,typeLabel(c.type),sl.length,sl.filter(x=>x.product!=='lube').reduce((a,x)=>a+num(x.qty),0),inR.filter(x=>DEBIT.has(x.kind)).reduce((a,x)=>a+num(x.amount),0),inR.filter(x=>!DEBIT.has(x.kind)).reduce((a,x)=>a+num(x.amount),0),r2(bal)]; })
+      .filter(r=>r[2]||r[5]||Math.abs(r[6])>0.5).sort((a,b)=>b[4]-a[4]);
+    const tot=['','',0,0,0,0,0]; rows.forEach(r=>{ for(let i=2;i<7;i++) tot[i]+=r[i]; });
+    return {cols:[[t('customer')],[t('type')],[t('fills'),'i'],[t('litres'),'l'],[t('debit'),'m'],[t('credit'),'m'],[t('balance'),'m']],rows,tot}; },
+  vehicle(f,to){ const g={}; for(const x of S.data.transactions){ if(x.kind!=='slip'||x.status!=='approved'||x.date<f||x.date>to) continue; const k=(x.vehicle_no||'—')+'|'+x.customer_id;
+      const r=g[k]=g[k]||[x.vehicle_no||'—',(custById(x.customer_id)||{}).name||'?',0,0,0,0]; r[2]++; if(x.product==='petrol') r[3]+=num(x.qty); if(x.product==='diesel') r[4]+=num(x.qty); r[5]+=num(x.amount); }
+    const rows=Object.values(g).sort((a,b)=>b[5]-a[5]); const tot=['','',0,0,0,0]; rows.forEach(r=>{ for(let i=2;i<6;i++) tot[i]+=r[i]; });
+    return {cols:[[t('vehicle_no')],[t('customer')],[t('fills'),'i'],[t('petrol')+' L','l'],[t('diesel')+' L','l'],[t('amount'),'m']],rows,tot}; },
+  staff(f,to){ const g={}; for(const x of S.data.transactions){ if(x.date<f||x.date>to||!['slip','payment'].includes(x.kind)) continue; const r=g[x.created_by]=g[x.created_by]||[profName(x.created_by),0,0,0,0,0,0];
+      if(x.status==='rejected'){ r[5]++; continue; } if(x.status==='pending') r[6]++; if(x.kind==='slip'){ r[1]++; r[2]+=num(x.amount); } else { r[3]++; r[4]+=num(x.amount); } }
+    const rows=Object.values(g); const tot=['',0,0,0,0,0,0]; rows.forEach(r=>{ for(let i=1;i<7;i++) tot[i]+=r[i]; });
+    return {cols:[[t('staff')],[t('k_slip'),'i'],[t('k_slip')+' ₹','m'],[t('k_payment'),'i'],[t('k_payment')+' ₹','m'],[t('rejected'),'i'],[t('pending'),'i']],rows,tot}; }
+};
+function fmtCell(v,k){ if(k==='m') return money(v); if(k==='l') return ltr(v); if(k==='d') return fd(v); return esc(v); }
+V.reports=()=>{
+  const f=S.rf||(S.rf={from:today().slice(0,8)+'01',to:today(),type:'daily'});
+  const R=REPORTS[f.type](f.from,f.to);
+  const names={daily:'r_daily',payments:'r_payments',ageing:'r_ageing',customer:'r_customer',vehicle:'r_vehicle',staff:'r_staff'};
+  return {html:`<h1>${t('reports')}</h1>
+   <div class="card noprint"><div class="form"><div class="full"><label>${t('reports')}</label><select id="rt">${Object.entries(names).map(([k,v])=>`<option value="${k}" ${f.type===k?'selected':''}>${t(v)}</option>`).join('')}</select></div>
+    <div><label>${t('from')}</label><input type="date" id="rfrom" value="${f.from}"></div><div><label>${t('to')}</label><input type="date" id="rto" value="${f.to}"></div>
+    <div style="align-self:end" class="row"><button class="btn" id="rcsv">⬇ ${t('export_csv')}</button><button class="btn" id="rprint">🖨</button></div></div></div>
+   <div class="card"><h2>${t(names[f.type])} <span class="small muted">${fd(f.from)} → ${fd(f.to)}</span></h2>${R.note?`<div class="small muted" style="margin-bottom:8px">${esc(R.note)}</div>`:''}
+    <div class="tw"><table><thead><tr>${R.cols.map(([h,k])=>`<th class="${k&&k!=='d'?'n':''}">${esc(h)}</th>`).join('')}</tr></thead><tbody>
+    ${R.rows.map(r=>`<tr>${r.map((v,i)=>`<td class="${R.cols[i][1]&&R.cols[i][1]!=='d'?'n':''}">${fmtCell(v,R.cols[i][1])}</td>`).join('')}</tr>`).join('')||`<tr><td colspan="${R.cols.length}" class="empty">${t('nothing')}</td></tr>`}
+    ${R.rows.length&&R.tot?`<tr class="tot">${R.tot.map((v,i)=>`<td class="${R.cols[i][1]&&R.cols[i][1]!=='d'?'n':''}">${i===0?t('total'):v===''?'':fmtCell(v,R.cols[i][1])}</td>`).join('')}</tr>`:''}
+    </tbody></table></div><div class="small muted" style="margin-top:6px">${t('approved')} ✓</div></div>`,
+   mount(root){
+     const upd=()=>{ S.rf={type:$('#rt',root).value,from:$('#rfrom',root).value||f.from,to:$('#rto',root).value||f.to}; render(); };
+     $('#rt',root).onchange=upd; $('#rfrom',root).onchange=upd; $('#rto',root).onchange=upd;
+     $('#rprint',root).onclick=()=>window.print();
+     $('#rcsv',root).onclick=()=>downloadFile(`${f.type}-${f.from}-to-${f.to}.csv`,toCSV(R.cols.map(c=>c[0]),R.rows.map(r=>r.map(v=>typeof v==='number'?r2(v):v))),'text/csv');
+   }};
+};
+
+/* ---------- staff ---------- */
+V.staff=()=>{
+  const ps=[...S.data.profiles].sort((a,b)=>(a.role===b.role?0:a.role==='owner'?-1:1));
+  return {html:`<h1>${t('staff')}</h1><div class="alert info">${t('staff_help')}</div>
+   <div class="tw"><table><thead><tr><th>${t('name')}</th><th>${t('email')}</th><th>${t('role')}</th><th>${t('status')}</th></tr></thead><tbody>
+   ${ps.map(p=>{ const me=p.id===S.profile.id; return `<tr><td><b>${esc(p.name||'—')}</b><div class="small muted">${esc(p.phone||'')}</div></td><td class="small">${esc(p.email||'')}</td>
+     <td><select data-role="${p.id}" ${me?'disabled':''} style="width:auto"><option value="staff" ${p.role==='staff'?'selected':''}>${t('staffr')}</option><option value="owner" ${p.role==='owner'?'selected':''}>${t('owner')}</option></select></td>
+     <td><label class="row" style="margin:0;color:var(--ink)"><input type="checkbox" data-act="${p.id}" ${p.active?'checked':''} ${me?'disabled':''}> ${p.active?t('active'):t('inactive')}</label></td></tr>`; }).join('')}
+   </tbody></table></div>`,
+   mount(root){
+     $$('[data-role]',root).forEach(s=>s.onchange=act(async()=>{ await B.update('profiles',s.dataset.role,{role:s.value}); await reload('profiles'); toast(t('saved')); render(); }));
+     $$('[data-act]',root).forEach(cb=>cb.onchange=act(async()=>{ await B.update('profiles',cb.dataset.act,{active:cb.checked}); await reload('profiles'); toast(t('saved')); render(); }));
+   }};
+};
+
+/* ---------- settings ---------- */
+V.settings=()=>{
+  const st=settings(), prods=S.data.products, rates=[...S.data.rates].sort((a,b)=>b.date<a.date?-1:b.date>a.date?1:(b.created_at<a.created_at?-1:1)).slice(0,30);
+  return {html:`<h1>${t('settings')}</h1>
+   <div class="card"><h2>${t('pump_details')}</h2><div class="form">
+    <div><label>${t('pump_name')}</label><input id="s1" value="${esc(st.pump_name||'')}"></div><div><label>${t('company')}</label><input id="s2" value="${esc(st.company||'')}"></div>
+    <div class="full"><label>${t('address')}</label><input id="s3" value="${esc(st.address||'')}"></div>
+    <div><label>${t('gstin')}</label><input id="s4" value="${esc(st.gstin||'')}" style="text-transform:uppercase"></div><div><label>${t('phone')}</label><input id="s5" value="${esc(st.phone||'')}"></div>
+    <div><label>${t('lube_gst')}</label><input id="s6" type="number" value="${num(st.lube_gst||18)}"></div><div class="full"><label>${t('bill_footer')}</label><input id="s7" value="${esc(st.bill_footer||'')}"></div>
+    <div class="full"><button class="btn p" id="ssave">${t('save')}</button></div></div></div>
+   <div class="grid g2">
+    <div>${ratesCard()}<div class="card"><h2>${t('rate_hist')}</h2><div class="tw" style="max-height:300px"><table><thead><tr><th>${t('date')}</th><th class="n">${t('petrol')}</th><th class="n">${t('diesel')}</th><th>${t('created_by')}</th></tr></thead><tbody>${rates.map(r=>`<tr><td>${fd(r.date)}</td><td class="n">${money(r.petrol)}</td><td class="n">${money(r.diesel)}</td><td class="small">${esc(profName(r.created_by))}</td></tr>`).join('')}</tbody></table></div></div></div>
+    <div class="card"><div class="row" style="margin-bottom:8px"><h2 style="margin:0">${t('lubes')}</h2><span class="sp"></span><button class="btn sm" id="addP">＋ ${t('add')}</button></div>
+     ${prods.map(p=>`<div class="item"><div class="main"><b>${esc(p.name)}</b> ${p.active===false?`<span class="chip">${t('inactive')}</span>`:''}<div class="small muted">${money(p.price)} · GST ${num(p.gst_rate)}%</div></div><button class="btn sm" data-p="${p.id}">✎</button></div>`).join('')||`<div class="empty">${t('nothing')}</div>`}</div>
+   </div>
+   <div class="card"><h2>${t('data')}</h2>
+    <div class="small muted" style="margin-bottom:10px">${B.kind==='demo'?t('demo_mode'):t('connected_to')+': '+esc(B.url)}</div>
+    <div class="row"><button class="btn" id="bk">⬇ ${t('backup')}</button>${B.kind==='demo'?`<button class="btn d" id="rdemo">${t('reset_demo')}</button>`:''}${CONFIG.SUPABASE_URL?'':`<button class="btn" id="disc">${t('disconnect')}</button>`}</div></div>`,
+   mount(root){
+     bindRates(root);
+     $('#ssave',root).onclick=act(async()=>{ await B.update('settings',1,{pump_name:$('#s1',root).value.trim(),company:$('#s2',root).value.trim(),address:$('#s3',root).value.trim(),gstin:$('#s4',root).value.trim().toUpperCase(),phone:$('#s5',root).value.trim(),lube_gst:num($('#s6',root).value),bill_footer:$('#s7',root).value.trim()}); await reload('settings'); toast(t('saved')); render(); });
+     $('#addP',root).onclick=()=>productForm(null);
+     $$('[data-p]',root).forEach(b=>b.onclick=()=>productForm(S.data.products.find(p=>p.id===b.dataset.p)));
+     $('#bk',root).onclick=()=>downloadFile(`pump-credit-backup-${today()}.json`,JSON.stringify(S.data,null,1),'application/json');
+     const rd=$('#rdemo',root); if(rd) rd.onclick=()=>{ LS.del('ppcm_demo_v1'); location.hash='#/dashboard'; location.reload(); };
+     const ds=$('#disc',root); if(ds) ds.onclick=act(async()=>{ try{ await B.signOut(); }catch(e){} LS.del('ppcm_mode'); LS.del('ppcm_cloud'); location.hash=''; location.reload(); });
+   }};
+};
+function productForm(p){
+  const x=p||{name:'',unit:'pc',price:0,gst_rate:num(settings().lube_gst||18),active:true};
+  openModal(p?t('edit_item'):t('add'),`<div class="form"><div class="full"><label>${t('name')} *</label><input id="pn" value="${esc(x.name)}"></div>
+   <div><label>${t('price_incl')}</label><input id="pp" type="number" step="0.01" value="${num(x.price)}"></div><div><label>${t('gst_pct')}</label><input id="pg" type="number" step="0.01" value="${num(x.gst_rate)}"></div>
+   <div><label>${t('status')}</label><select id="pa"><option value="1" ${x.active!==false?'selected':''}>${t('active')}</option><option value="0" ${x.active===false?'selected':''}>${t('inactive')}</option></select></div></div>
+   <div class="row" style="margin-top:16px"><span class="sp"></span><button class="btn" data-close>${t('cancel')}</button><button class="btn p" id="psv">${t('save')}</button></div>`,box=>{
+    $('#psv',box).onclick=act(async()=>{ const row={name:$('#pn',box).value.trim(),unit:'pc',price:num($('#pp',box).value),gst_rate:num($('#pg',box).value),active:$('#pa',box).value==='1'};
+      if(!row.name||row.price<=0) throw new Error(t('err_req'));
+      if(p) await B.update('products',p.id,row); else await B.insert('products',row);
+      await reload('products'); closeModal(); toast(t('saved')); render(); });
+  });
+}
+
+/* ============================== auth screens ============================== */
+function langPicker(){ return `<div class="row" style="justify-content:center;margin-top:14px">${[['en','English'],['hi','हिन्दी'],['pa','ਪੰਜਾਬੀ']].map(([k,l])=>`<button class="btn sm ${S.lang===k?'p':''}" data-lang="${k}">${l}</button>`).join('')}</div>`; }
+function bindLang(root){ $$('[data-lang]',root).forEach(b=>b.onclick=()=>{ S.lang=b.dataset.lang; LS.set('ppcm_lang',S.lang); render(); }); }
+function renderWelcome(){
+  const app=$('#app');
+  app.innerHTML=`<div class="center"><div class="card"><div style="text-align:center;font-size:44px">⛽</div><h1 style="text-align:center">${t('welcome')}</h1><p class="muted" style="text-align:center">${t('welcome_t')}</p>
+   <button class="btn p big" id="wDemo">${t('try_demo')}</button>
+   <details style="margin-top:14px"><summary class="b" style="cursor:pointer">${t('connect')}</summary><div class="form" style="margin-top:10px">
+    <div class="full"><label>${t('sb_url')}</label><input id="wu" placeholder="https://xxxx.supabase.co"></div><div class="full"><label>${t('sb_key')}</label><input id="wk" placeholder="eyJhbGciOi..."></div>
+    <div class="full"><button class="btn big" id="wGo">${t('connect')}</button></div></div></details>${langPicker()}</div></div>`;
+  bindLang(app);
+  $('#wDemo').onclick=act(async()=>{ LS.set('ppcm_mode','demo'); await boot(); });
+  $('#wGo').onclick=act(async()=>{ const u=$('#wu').value.trim().replace(/\/+$/,''), k=$('#wk').value.trim(); if(!/^https:\/\//.test(u)||!k) throw new Error(t('err_req'));
+    const b=new SupaBackend(u,k); await b.init(); LS.set('ppcm_cloud',{SUPABASE_URL:u,SUPABASE_ANON_KEY:k}); LS.set('ppcm_mode','cloud'); B=b; render(); });
+}
+function renderLogin(){
+  const app=$('#app');
+  if(B.kind==='demo'){
+    app.innerHTML=`<div class="center"><div class="card"><div style="text-align:center;font-size:40px">⛽</div><h1 style="text-align:center">${t('demo_users')}</h1>
+     ${B.db.profiles.filter(p=>p.active).map(p=>`<button class="btn big" style="margin-bottom:8px" data-u="${p.id}">${p.role==='owner'?'👑':'🧑‍🔧'} ${esc(p.name)} — ${p.role==='owner'?t('owner'):t('staffr')}</button>`).join('')}
+     <button class="btn big d" id="leave" style="margin-top:6px">${t('leave_demo')}</button>${langPicker()}</div></div>`;
+    bindLang(app);
+    $$('[data-u]',app).forEach(b=>b.onclick=act(async()=>{ await B.loginAs(b.dataset.u); S.profile=(await B.getSession()).profile; render(); }));
+    $('#leave').onclick=()=>{ LS.del('ppcm_mode'); B=null; render(); };
+    return;
+  }
+  let mode='in';
+  const draw=()=>{ app.innerHTML=`<div class="center"><div class="card"><div style="text-align:center;font-size:40px">⛽</div><h1 style="text-align:center">${t('app')}</h1>
+    <div class="seg" style="display:flex;margin-bottom:14px"><button style="flex:1" data-m="in" class="${mode==='in'?'on':''}">${t('login')}</button><button style="flex:1" data-m="up" class="${mode==='up'?'on':''}">${t('signup')}</button></div>
+    <div class="form">${mode==='up'?`<div class="full"><label>${t('name')}</label><input id="an"></div><div class="full"><label>${t('phone')}</label><input id="ap" type="tel"></div>`:''}
+     <div class="full"><label>${t('email')}</label><input id="ae" type="email" autocomplete="email"></div><div class="full"><label>${t('password')}</label><input id="aw" type="password" autocomplete="${mode==='in'?'current-password':'new-password'}" placeholder="${mode==='up'?t('new_pw'):''}"></div>
+     <div class="full"><button class="btn p big" id="ago">${mode==='in'?t('login'):t('signup')}</button></div></div>
+    ${mode==='up'?`<p class="small muted">${t('first_owner')}</p>`:''}${langPicker()}
+    ${CONFIG.SUPABASE_URL?'':`<p class="small" style="text-align:center"><a href="#" id="chg">${t('disconnect')}</a></p>`}</div></div>`;
+    bindLang(app);
+    $$('[data-m]',app).forEach(b=>b.onclick=()=>{ mode=b.dataset.m; draw(); });
+    const chg=$('#chg',app); if(chg) chg.onclick=e=>{ e.preventDefault(); LS.del('ppcm_mode'); LS.del('ppcm_cloud'); B=null; render(); };
+    $('#ago',app).onclick=act(async()=>{ const e=$('#ae').value.trim(), w=$('#aw').value; if(!e||!w) throw new Error(t('err_req'));
+      if(mode==='up'){ const r=await B.signUp(e,w,$('#an').value.trim(),$('#ap').value.trim()); if(!r.session){ toast(t('check_email'),6000); mode='in'; draw(); return; } } else await B.signIn(e,w);
+      const s=await B.getSession(); S.profile=s&&s.profile; render(); });
+  };
+  draw();
+}
+function renderWaiting(){
+  const app=$('#app');
+  app.innerHTML=`<div class="center"><div class="card" style="text-align:center"><div style="font-size:40px">⏳</div><p>${t('waiting')}</p><p class="small muted">${esc(S.profile.email||'')}</p>
+   <div class="row" style="justify-content:center"><button class="btn p" id="wr">${t('refresh')}</button><button class="btn" id="wl">${t('logout')}</button></div></div></div>`;
+  $('#wr').onclick=act(async()=>{ const s=await B.getSession(); S.profile=s&&s.profile; render(); });
+  $('#wl').onclick=act(async()=>{ await B.signOut(); S.profile=null; render(); });
+}
+
+/* ============================== render / boot ============================== */
+let liveBound=false;
+async function render(){
+  document.documentElement.lang=S.lang;
+  const app=$('#app');
+  if(!B) return renderWelcome();
+  if(!S.profile) return renderLogin();
+  if(!S.profile.active) return renderWaiting();
+  if(!S.ready){ app.innerHTML=`<div class="center"><div class="muted">Loading…</div></div>`; try{ await loadAll(); }catch(e){ app.innerHTML=`<div class="center"><div class="card"><div class="alert bad">${esc(niceErr(e))}</div><button class="btn" onclick="location.reload()">${t('refresh')}</button></div></div>`; return; }
+    if(B.subscribe&&!liveBound){ liveBound=true; let tm; B.subscribe(()=>{ clearTimeout(tm); tm=setTimeout(async()=>{ await reload('transactions'); if(['approvals','dashboard'].includes(curView())&&$('#modal').classList.contains('hidden')) render(); },700); }); } }
+  let [,view,arg]=(location.hash||'#/dashboard').split('/'); view=view||'dashboard';
+  if(!V[view]||(OWNER_ONLY.has(view)&&!isOwner())||(view==='more'&&!isOwner())) view='dashboard';
+  app.innerHTML=shellHTML(view);
+  const out=V[view](arg?decodeURIComponent(arg):undefined), main=$('#main');
+  main.innerHTML=out.html; if(out.mount) out.mount(main);
+  bindShell(); window.scrollTo(0,0);
+}
+async function boot(){
+  const mode=(CONFIG.SUPABASE_URL&&CONFIG.SUPABASE_ANON_KEY)?'cloud':LS.get('ppcm_mode');
+  B=null; S.profile=null; S.ready=false;
+  try{
+    if(mode==='cloud'){ const cfg=CONFIG.SUPABASE_URL?CONFIG:LS.get('ppcm_cloud'); if(cfg&&cfg.SUPABASE_URL){ const b=new SupaBackend(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY); await b.init(); B=b; } }
+    else if(mode==='demo'){ const b=new LocalBackend(); await b.init(); B=b; }
+    if(B){ const s=await B.getSession(); S.profile=s?s.profile:null; }
+  }catch(e){ console.error(e); toast('⚠ '+niceErr(e),6000); }
+  render();
+}
+window.addEventListener('hashchange',()=>{ if(B&&S.profile) render(); });
+if('serviceWorker' in navigator&&location.protocol==='https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
+boot();
+</script>
+</body>
+</html>
